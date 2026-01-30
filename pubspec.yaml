@@ -1,0 +1,125 @@
+name: sandbox_flutter_new
+description: "Flutter widgets & practices sandbox"
+publish_to: 'none'
+
+# Flutter version: 3.38.8
+# Build version name format: BB.MM.PP
+# Build version code format: BBMMPPVV
+# Where: B - breaking, M - minor, P - patch, V - version
+version: 0.0.1+00000101
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Style
+  # swipeable_page_route: ^0.4.7 you can use it after plugin fix compilation with flutter 3.35+
+  smooth_page_indicator: ^2.0.1
+  dropdown_button2: ^2.3.9
+  custom_refresh_indicator: ^4.0.1
+  skeletonizer: ^2.1.2
+  expandable_page_view: ^1.0.17 # for in_app_slider
+
+  # Navigation
+  go_router: ^17.0.1
+
+  # State & Storage
+  flutter_bloc: ^9.1.1
+  provider: ^6.1.5+1
+  flutter_secure_storage: ^10.0.0
+  shared_preferences: ^2.5.4
+  flutter_cache_manager: ^3.4.1
+  bloc: any
+
+  # HTTP & Web view & Network connection
+  http: any
+  web: any
+  dio: ^5.9.1
+  connectivity_plus: ^7.0.0
+  url_launcher: ^6.3.2
+
+  # Firebase
+  firebase_core: ^4.4.0
+  firebase_messaging: ^16.1.1
+  firebase_crashlytics: ^5.0.7
+  firebase_analytics: ^12.1.1
+  firebase_remote_config: ^6.1.4
+
+  # Notifications
+  # flutter_local_notifications: ^20.0.0
+
+  # Camera & Scanner & Barcode
+  camera: ^0.11.3
+  flutter_zxing: ^2.2.1
+  barcode_widget: ^2.0.4
+  flutter_image_compress: ^2.4.0
+
+  # Map & Location
+  # google_maps_flutter: ^2.14.0
+  location: ^8.0.1
+  # latlong2: ^0.9.1
+
+  # Settings & Permissions & Device metadata
+  app_settings: ^7.0.0
+  package_info_plus: ^9.0.0
+  device_info_plus: ^12.2.0
+  permission_handler: ^12.0.1
+  path_provider: ^2.1.5
+
+  # Global services
+  get_it: ^9.2.0
+  easy_localization: ^3.0.8
+  local_auth: ^3.0.0
+
+  # Other
+  dartz: ^0.10.1
+  reactive_forms: ^18.1.1
+  flutter_svg: ^2.2.3
+  sms_autofill: ^2.4.1
+  uuid: ^4.5.2
+  collection: any
+  native_device_orientation: ^2.1.0
+
+  # Logs
+  talker: ^5.1.13
+  talker_flutter: any
+  talker_dio_logger: any
+  talker_bloc_logger: any
+
+dev_dependencies:
+  flutter_lints: any
+
+flutter:
+  # default-flavor: stable
+  uses-material-design: true
+
+  assets:
+  - assets/
+  - assets/icons/
+  - assets/icons/_common/
+  - assets/translations/
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat/Montserrat-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Montserrat/Montserrat-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Montserrat/Montserrat-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Montserrat/Montserrat-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat/Montserrat-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Montserrat/Montserrat-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Montserrat/Montserrat-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Montserrat/Montserrat-Black.ttf
+          weight: 900

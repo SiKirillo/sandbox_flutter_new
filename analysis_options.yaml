@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+linter:
+  rules:
+    prefer_const_constructors_in_immutables: true
+    camel_case_types: false
+
+analyzer:
+  errors:
+    unnecessary_library_name: ignore
+    use_build_context_synchronously: false
