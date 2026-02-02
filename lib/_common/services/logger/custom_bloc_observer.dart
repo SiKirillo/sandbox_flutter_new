@@ -241,7 +241,7 @@ class _BlocErrorLog extends TalkerLog {
 
     if (stackTrace != null) {
       buffer.write('\n${List.generate(109, (i) => '-').join()}');
-      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10).toString()}');
+      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10) ?? ''}');
     }
 
     return buffer.toString();

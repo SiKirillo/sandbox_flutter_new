@@ -18,17 +18,14 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AbsorbPointer(
-      absorbing: isDisabled,
-      child: SizedBox.square(
-        dimension: options.size,
-        child: IconButton(
-          icon: content,
-          padding: options.padding,
-          splashRadius: options.size,
-          highlightColor: options.splashColor,
-          onPressed: onTap,
-        ),
+    return SizedBox.square(
+      dimension: options.size,
+      child: IconButton(
+        icon: content,
+        padding: options.padding,
+        splashRadius: options.size,
+        highlightColor: options.splashColor,
+        onPressed: isDisabled ? null : onTap,
       ),
     );
   }

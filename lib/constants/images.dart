@@ -1,10 +1,12 @@
 part of '../_common/common.dart';
 
+/// Asset paths for icons/images and [precacheAssets] for preloading.
 class ImageConstants {
   static const svgPrefix = '.svg';
 
   static bool get _isLightTheme => locator<ThemeProvider>().isLight;
 
+  /// Preloads SVG and image assets used in the app to avoid first-frame jank.
   static void precacheAssets(BuildContext context) {
     final svgLoaders = <SvgAssetLoader>[
       // const SvgAssetLoader(icBackground),

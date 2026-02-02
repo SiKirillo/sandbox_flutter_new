@@ -16,7 +16,7 @@ class CustomTextButton extends StatelessWidget {
     this.isDisabled = false,
   }) : assert(content is Widget || content is String);
 
-  BoxDecoration _getButtonDecoration(BuildContext context) {
+  BoxDecoration _getButtonDecoration() {
     return options.decoration ?? BoxDecoration(
       color: isDisabled
           ? ColorConstants.buttonTextDisable()
@@ -52,7 +52,7 @@ class CustomTextButton extends StatelessWidget {
         height: options.height,
         width: isExpanded ? double.maxFinite : options.width,
         constraints: options.constraints,
-        decoration: _getButtonDecoration(context),
+        decoration: _getButtonDecoration(),
         child: TextButton(
           onPressed: onTap,
           style: TextButton.styleFrom(

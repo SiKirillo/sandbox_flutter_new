@@ -1,11 +1,13 @@
 part of '../common.dart';
 
 extension StringExtension on String {
+  /// First letter uppercase, rest lowercase.
   String toCamelCase() {
-    if (isEmpty || this == '') return '';
+    if (isEmpty) return '';
     return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
   }
 
+  /// Measures text size with [TextPainter] using optional [style], [maxLines], and [maxWidth].
   Size calculateSize({
     TextStyle? style,
     int maxLines = 1,
@@ -19,6 +21,6 @@ extension StringExtension on String {
       maxLines: maxLines,
       textDirection: TextDirection.ltr,
     )..layout(maxWidth: maxWidth);
-   return painter.size;
+    return painter.size;
   }
 }

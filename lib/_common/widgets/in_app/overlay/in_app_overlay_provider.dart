@@ -19,8 +19,14 @@ class InAppOverlayProvider {
 
   void show({BuildContext? context, String? text}) {
     LoggerService.logTrace('InAppOverlayProvider -> show()');
-    if (_key.currentState == null && context == null) {
-      LoggerService.logWarning('InAppOverlayProvider -> show(): build state or context is null');
+    final overlayState = context != null ? Overlay.maybeOf(context) : _key.currentState?.overlay;
+    if (overlayState == null) {
+      LoggerService.logWarning('InAppOverlayProvider -> show(): navigator state or context is null');
+      return;
+    }
+
+    if (_overlay != null) {
+      hide();
     }
 
     _overlay = OverlayEntry(
@@ -37,11 +43,7 @@ class InAppOverlayProvider {
       },
     );
 
-    if (context != null) {
-      Overlay.of(context).insert(_overlay!);
-    } else {
-      _key.currentState!.overlay!.insert(_overlay!);
-    }
+    overlayState.insert(_overlay!);
   }
 
   void hide() {

@@ -17,6 +17,6 @@ part 'firebase_messaging_service.dart';
 class FirebaseCoreService {
   static Future<FirebaseApp> init({required String name, required FirebaseOptions options}) async {
     LoggerService.logInfo('FirebaseCoreService -> init(name: $name)');
-    return await Firebase.initializeApp(name: name, options: options);
+    return Firebase.initializeApp(name: name, options: options);
   }
 }

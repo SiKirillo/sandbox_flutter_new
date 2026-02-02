@@ -99,7 +99,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       preferredSize: preferredSize,
       child: OpacityWrapper(
         isOpaque: isDisabled,
-        child: AppBar(
+        child: AbsorbPointer(
+          absorbing: isDisabled,
+          child: AppBar(
           // heroTag: options.heroTag,
           backgroundColor: options.backgroundColor ?? Theme.of(context).appBarTheme.backgroundColor,
           shadowColor: options.shadowColor ?? Theme.of(context).appBarTheme.shadowColor,
@@ -146,6 +148,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               : RoundedRectangleBorder(
                   borderRadius: options.borderRadius ?? BorderRadius.zero,
                 ),
+        ),
         ),
       ),
     );
@@ -223,8 +226,13 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
       return;
     }
 
+    final size = flexibleContext.size;
+    if (size == null) {
+      return;
+    }
+
     final previousSize = _flexibleSize;
-    final newSize = flexibleContext.size!.height;
+    final newSize = size.height;
 
     if (mounted && previousSize != newSize) {
       setState(() {
@@ -296,7 +304,7 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
             borderRadius: widget.options.borderRadius ?? BorderRadius.zero,
             child: Stack(
               children: [
-                widget.flexibleContent as Widget,
+                widget.flexibleContent!,
                 Positioned(
                   top: widget.preferredSize.height - 16.0,
                   left: 0.0,
@@ -330,12 +338,14 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
 }
 
 class CustomAppBarOptions {
+  /// Reserved for future MorphingAppBar use; not passed to [AppBar] / [SliverAppBar] yet.
   final String heroTag;
   final EdgeInsets appBarPadding, contentPadding;
   final BorderRadius? borderRadius;
   final CrossAxisAlignment appBarAlign;
   final TextStyle? contentStyle;
   final TextAlign textAlign;
+  /// When both are true, [buildLeadingWidget] shows back button (first check wins).
   final bool withBackButton;
   final bool withCloseButton;
   final bool withElevation;

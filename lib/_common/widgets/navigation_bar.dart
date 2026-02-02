@@ -2,7 +2,7 @@ part of '../common.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   final List<NavigationBarData> items;
-  final Function(int) onSelect;
+  final ValueChanged<int> onSelect;
   final int currentIndex;
   final CustomNavigationBarType type;
 
@@ -13,7 +13,8 @@ class CustomNavigationBar extends StatelessWidget {
     this.currentIndex = 0,
     this.type = CustomNavigationBarType.white,
   })  : assert(items.length >= 1),
-        assert(currentIndex >= 0);
+        assert(currentIndex >= 0),
+        assert(currentIndex < items.length);
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,7 @@ class CustomNavigationBar extends StatelessWidget {
           top: Radius.circular(16.0),
         ),
         child: Row(
-          mainAxisAlignment:
-              SizeConstants.isMobile(context: context) ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
+          mainAxisAlignment: SizeConstants.isMobile(context: context) ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
           spacing: SizeConstants.isMobile(context: context) ? 0.0 : MediaQuery.sizeOf(context).width * 0.05,
           children: items.indexed.map((item) {
             return Stack(
@@ -51,7 +51,6 @@ class CustomNavigationBar extends StatelessWidget {
                   type: type,
                 ),
                 if (item.$2.showNotificationPoint)
-                  // Красный круг с белым текстом, если есть countNotifications > 0
                   Positioned(
                     top: 5,
                     right: 15,
@@ -178,7 +177,7 @@ class _NavigationBarItemState extends State<_NavigationBarItem> with SingleTicke
                     ).animate(_animationController),
                     item: widget.item,
                   ),
-                  SizedBox(height: 6.0),
+                  const SizedBox(height: 6.0),
                   _NavigationBarLabel(
                     animation: TextStyleTween(
                       begin: TextStyle(

@@ -1,6 +1,7 @@
 part of '../common.dart';
 
-class CustomListViewBuilder<T> extends StatelessWidget {
+/// A [ListView.separated] wrapped in [CustomScrollbar].
+class CustomListViewBuilder extends StatelessWidget {
   final ScrollController? controller;
   final int itemCount;
   final EdgeInsets padding;
@@ -30,6 +31,7 @@ class CustomListViewBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollbar(
+      controller: controller,
       isScrollbarVisible: isScrollbarVisible,
       child: ListView.separated(
         controller: controller,
@@ -43,9 +45,7 @@ class CustomListViewBuilder<T> extends StatelessWidget {
         padding: padding,
         keyboardDismissBehavior: keyboardDismissBehavior,
         itemBuilder: itemBuilder,
-        separatorBuilder: separatorBuilder ?? (_, index) {
-          return SizedBox();
-        },
+        separatorBuilder: separatorBuilder ?? (_, index) => const SizedBox.shrink(),
       ),
     );
   }

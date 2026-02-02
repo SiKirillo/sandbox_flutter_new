@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// A thin horizontal line with configurable height, thickness, and indents.
 class CustomDivider extends StatelessWidget {
   final double size, thickness, indent, endIndent;
   final Color? color;

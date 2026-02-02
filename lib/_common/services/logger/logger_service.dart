@@ -18,6 +18,7 @@ part 'custom_bloc_observer.dart';
 part 'custom_dio_observer.dart';
 part 'custom_route_observer.dart';
 
+/// Central logging via Talker: [init] configures Dio/Bloc/Route observers; use log* for custom messages.
 class LoggerService {
   static final _talker = TalkerFlutter.init();
   static late final CustomDioLogger _talkerDio;
@@ -119,9 +120,6 @@ class LoggerService {
     final stackTraceLength = (maxCount != null ? math.min(lines.length, maxCount) : lines.length);
     for (int count = 0; count < stackTraceLength; count++) {
       final line = lines[count];
-      if (count < 0) {
-        continue;
-      }
       formatted.add('#$count   ${line.replaceFirst(RegExp(r'#\d+\s+'), '')}');
     }
 
@@ -214,7 +212,7 @@ class _ErrorLog extends TalkerLog {
 
     if (stackTrace != null) {
       buffer.write('\n${List.generate(109, (i) => '-').join()}');
-      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10).toString()}');
+      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10) ?? ''}');
     }
 
     return buffer.toString();
@@ -248,7 +246,7 @@ class _WarningLog extends TalkerLog {
 
     if (stackTrace != null) {
       buffer.write('\n${List.generate(109, (i) => '-').join()}');
-      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10).toString()}');
+      buffer.write('\n${LoggerService._formatStackTrace(stackTrace, 10) ?? ''}');
     }
 
     return buffer.toString();

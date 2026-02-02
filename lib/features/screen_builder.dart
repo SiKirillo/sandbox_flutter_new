@@ -1,5 +1,7 @@
 part of '../_common/common.dart';
 
+/// Wraps the active screen: dispatches [Init_AppEvent], sets orientation and precaches assets,
+/// and listens to [AppBloc] to navigate on status changes (welcome / loggedIn / loggedOut).
 class ScreenBuilder extends StatefulWidget {
   final Widget child;
 

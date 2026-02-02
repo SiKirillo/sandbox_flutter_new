@@ -2,30 +2,31 @@ part of '../common.dart';
 
 class CustomSwitch extends StatelessWidget {
   final bool value;
-  final Function(bool) onTap;
+  final ValueChanged<bool> onChanged;
   final Size size;
 
   const CustomSwitch({
     super.key,
     required this.value,
-    required this.onTap,
+    required this.onChanged,
     this.size = const Size(32.0, 18.0),
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.fromSize(
-      size: size,
+    return SizedBox(
+      height: size.height,
+      width: size.width,
       child: FittedBox(
         fit: BoxFit.cover,
         child: Switch(
           value: value,
-          onChanged: onTap,
+          onChanged: onChanged,
           activeThumbColor: ColorConstants.switchActiveThumb(),
           activeTrackColor: ColorConstants.switchActiveBG(),
           inactiveThumbColor: ColorConstants.switchInactiveThumb(),
           inactiveTrackColor: ColorConstants.switchInactiveBG(),
-          thumbIcon: WidgetStateProperty.all(Icon(null)),
+          thumbIcon: WidgetStateProperty.all(null),
           trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((states) {
             if (states.contains(WidgetState.selected)) {
               return ColorConstants.switchActiveBG();
@@ -33,9 +34,7 @@ class CustomSwitch extends StatelessWidget {
 
             return ColorConstants.switchInactiveBG();
           }),
-          trackOutlineWidth: WidgetStateProperty.resolveWith<double?>((states) {
-            return 0.0;
-          }),
+          trackOutlineWidth: WidgetStateProperty.all(0.0),
           padding: EdgeInsets.zero,
         ),
       ),

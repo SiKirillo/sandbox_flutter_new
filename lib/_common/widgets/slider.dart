@@ -16,7 +16,9 @@ class CustomSlider extends StatelessWidget {
     this.theme,
     this.type = CustomSliderType.round,
     required this.onChanged,
-  }) : assert(value >= 0.0 && min >= 0.0 && max >= 0.0);
+  })  : assert(value >= 0.0 && min >= 0.0 && max >= 0.0),
+        assert(step > 0),
+        assert(min < max);
 
   SliderThemeData _getThemeData(BuildContext context) {
     if (type == CustomSliderType.rectangle) {
@@ -56,7 +58,7 @@ class CustomSlider extends StatelessWidget {
         value: value.clamp(min, max),
         min: min,
         max: max,
-        divisions: divisionsCount,
+        divisions: divisionsCount != null && divisionsCount > 0 ? divisionsCount : null,
         onChanged: (value) {
           final double stepped = (((value - min) / step).round() * step) + min;
           final double snapped = (stepped.clamp(min, max));
@@ -86,7 +88,8 @@ class CustomSliderDescription extends StatelessWidget {
     this.disableColor,
     this.withPercent = false,
     this.type = CustomSliderType.round,
-  }) : assert(min >= 0 && max >= 0 && maxSteps >= 0);
+  })  : assert(min >= 0 && max >= 0 && maxSteps >= 0),
+        assert(min <= max);
 
   double get width => math.max(
     '$min${withPercent ? '%' : ''}'.calculateSize(style: style).width + 2.0,
@@ -101,7 +104,7 @@ class CustomSliderDescription extends StatelessWidget {
           duration: OtherConstants.defaultAnimationDuration,
           style: style?.copyWith(
             color: value <= currentValue ? activeColor : disableColor,
-          ) ?? Theme.of(context).textTheme.bodyMedium!,
+          ) ?? Theme.of(context).textTheme.bodyMedium ?? const TextStyle(),
           child: CustomText(
             text: '$value${withPercent ? '%' : ''}',
             maxLines: 1,

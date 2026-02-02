@@ -26,7 +26,7 @@ class InAppToastData {
     VoidCallback? onAction,
   }) {
     return InAppToastData(
-      id: DateTime.now().hashCode,
+      id: Object.hash(key, label, description, actionText),
       key: key,
       label: label,
       description: description,
@@ -42,11 +42,12 @@ class InAppToastData {
     String? actionText,
     VoidCallback? onAction,
   }) {
+    final description = failure.message;
     return InAppToastData(
-      id: DateTime.now().hashCode,
+      id: Object.hash(key, label, description, actionText),
       key: key,
       label: label,
-      description: failure.message,
+      description: description,
       actionText: actionText,
       onAction: onAction,
     );

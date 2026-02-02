@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// Holds current app language; [init] loads from prefs/device, [updateLocale] saves and applies.
 class LocaleProvider with ChangeNotifier {
   LanguageType _language = LanguageType.ru;
   LanguageType get language => _language;
@@ -24,7 +25,8 @@ class LocaleProvider with ChangeNotifier {
     }
 
     /// Read device locale
-    final deviceLocale = Locale.fromSubtags(languageCode: Platform.localeName);
+    final languageCode = Platform.localeName.split(RegExp(r'[_.]')).first;
+    final deviceLocale = Locale(languageCode);
     if (supportedLocales.contains(deviceLocale)) {
       _language = LanguageType.fromLocale(deviceLocale);
       return;
@@ -47,7 +49,7 @@ class LocaleProvider with ChangeNotifier {
   }
 }
 
-/// When we are using many json files
+/// Loads translations from multiple JSON paths and merges (e.g. common + app).
 class MergedAssetLoader extends localization.AssetLoader {
   @override
   Future<Map<String, dynamic>> load(String path, Locale locale) async {
@@ -58,8 +60,8 @@ class MergedAssetLoader extends localization.AssetLoader {
     final commonJson = await rootBundle.loadString(commonPath);
     final appJson = await rootBundle.loadString(appPath);
 
-    final commonMap = json.decode(commonJson);
-    final appMap = json.decode(appJson);
+    final commonMap = json.decode(commonJson) as Map<String, dynamic>;
+    final appMap = json.decode(appJson) as Map<String, dynamic>;
 
     return {
       ...commonMap,

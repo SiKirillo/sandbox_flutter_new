@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// Holds current theme mode and brightness; [isLight] drives [ColorConstants] and UI.
 class ThemeProvider with ChangeNotifier {
   ThemeMode _mode = ThemeMode.system;
   Brightness _brightness = Brightness.light;
@@ -8,7 +9,7 @@ class ThemeProvider with ChangeNotifier {
   Brightness get brightness => _brightness;
   bool get isLight => _mode == ThemeMode.light || (_mode == ThemeMode.system && _brightness == Brightness.light);
 
-  void init({required ThemeMode? mode, required Brightness? brightness}) {
+  void init({ThemeMode? mode, Brightness? brightness}) {
     LoggerService.logTrace('ThemeProvider -> init(mode: $mode, brightness: $brightness)');
     _mode = mode ?? _mode;
     _brightness = brightness ?? _brightness;
@@ -16,14 +17,17 @@ class ThemeProvider with ChangeNotifier {
 
   void update({ThemeMode? mode, Brightness? brightness}) {
     LoggerService.logTrace('ThemeProvider -> update(mode: $mode, brightness: $brightness)');
-    if (_mode != mode && mode != null) {
+    bool icChanged = false;
+    if (mode != null && _mode != mode) {
       _mode = mode;
-      notifyListeners();
+      icChanged = true;
     }
 
-    if (_brightness != brightness && brightness != null) {
+    if (brightness != null && _brightness != brightness) {
       _brightness = brightness;
-      notifyListeners();
+      icChanged = true;
     }
+
+    if (icChanged) notifyListeners();
   }
 }

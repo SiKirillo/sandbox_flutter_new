@@ -1,15 +1,19 @@
 part of '../common.dart';
 
+/// Biometric types supported by the device (face, fingerprint).
 enum BiometricSupportedType {
   face,
   fingerprint,
 }
 
+/// Handles biometric authentication (face/fingerprint) via [LocalAuthentication].
+/// Use [authenticate] to prompt; [canAuthenticate] / [getSupportedBiometrics] to check support.
 class BiometricService {
   final _localAuthentication = LocalAuthentication();
   Timer? _manyAttemptsTimer;
   bool _isInit = false;
 
+  /// Prompts for biometric auth with [localizedReason]; returns [Failure] on cancel/error.
   Future<dartz.Either<Failure, bool>> authenticate(String localizedReason) async {
     final isSupported = await canAuthenticate();
     if (!isSupported) {
@@ -30,7 +34,7 @@ class BiometricService {
 
       if (response) {
         _manyAttemptsTimer?.cancel();
-        _manyAttemptsTimer == null;
+        _manyAttemptsTimer = null;
         return dartz.Right(response);
       } else {
         LoggerService.logWarning('BiometricService -> authenticate(): biometricCanceled');
@@ -50,7 +54,7 @@ class BiometricService {
       }
 
       _manyAttemptsTimer?.cancel();
-      _manyAttemptsTimer == null;
+      _manyAttemptsTimer = null;
 
       if (e.code == 'PermanentlyLockedOut' || (e.message ?? '').contains('The operation was canceled because ERROR_LOCKOUT occurred too many times')) {
         LoggerService.logWarning('BiometricService -> authenticate(): biometricBlocked');
@@ -67,7 +71,7 @@ class BiometricService {
     } catch (e) {
       LoggerService.logWarning('BiometricService -> authenticate(): $e');
       _manyAttemptsTimer?.cancel();
-      _manyAttemptsTimer == null;
+      _manyAttemptsTimer = null;
       LoggerService.logWarning('BiometricService -> authenticate(): biometricIncorrect');
       return dartz.Left(BiometricFailureType.biometricIncorrect.get());
     } finally {
@@ -75,6 +79,7 @@ class BiometricService {
     }
   }
 
+  /// True if device supports and has at least one biometric enrolled.
   Future<bool> canAuthenticate() async {
     final isSupported = await _localAuthentication.isDeviceSupported();
     final availableBiometrics = await _localAuthentication.getAvailableBiometrics();
@@ -86,6 +91,7 @@ class BiometricService {
     return isSupported;
   }
 
+  /// Returns list of available biometric types (face, fingerprint).
   Future<List<BiometricSupportedType>> getSupportedBiometrics() async {
     final availableBiometrics = await _localAuthentication.getAvailableBiometrics();
     return [

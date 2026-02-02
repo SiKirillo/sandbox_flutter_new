@@ -6,7 +6,7 @@ class CustomTextInputField extends StatefulWidget {
   final String? labelText, hintText, errorText, helperText;
   final Widget? prefixIcon, suffixIcon;
   final bool isDisabled, isAutofocused, isValidField, isProcessing;
-  final bool isOptionalField, isProtectedField;
+  final bool isRequiredField, isProtectedField;
   final TextInputType keyboardType;
   final TextInputAction inputAction;
   final Iterable<String>? autofillHints;
@@ -34,7 +34,7 @@ class CustomTextInputField extends StatefulWidget {
     this.isAutofocused = false,
     this.isValidField = false,
     this.isProcessing = false,
-    this.isOptionalField = false,
+    this.isRequiredField = false,
     this.isProtectedField = false,
     this.keyboardType = TextInputType.text,
     this.inputAction = TextInputAction.done,
@@ -67,6 +67,15 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
     _isProtected = widget.isProtectedField;
     _hintTextHandler();
     widget.controller.addListener(_hintTextHandler);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_hintTextHandler);
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+    super.dispose();
   }
 
   void _hintTextHandler() {
@@ -221,7 +230,7 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
       span: TextSpan(
         text: widget.labelText,
         children: [
-          if (widget.isOptionalField)
+          if (widget.isRequiredField)
             TextSpan(
               text: '*',
               style: TextStyle(

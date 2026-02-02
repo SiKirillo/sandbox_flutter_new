@@ -2,9 +2,9 @@ part of 'logger_service.dart';
 
 /// [Dio] http client logger on [Talker] base
 ///
-/// [talker] filed is current [Talker] instance.
-/// Provide your instance if your application used [Talker] as default logger
-/// Common Talker instance will be used by default
+/// [talker] field is the current [Talker] instance.
+/// Provide your instance if your application uses [Talker] as the default logger.
+/// Common Talker instance will be used by default.
 class CustomDioLogger extends Interceptor {
   final Talker talker;
 
@@ -57,16 +57,18 @@ class CustomDioLogger extends Interceptor {
   ) {
     super.onRequest(options, handler);
     if (!settings.enabled) {
+      handler.next(options);
       return;
     }
 
     final accepted = settings.requestFilter?.call(options) ?? true;
     if (!accepted) {
+      handler.next(options);
       return;
     }
 
     try {
-      return talker.logCustom(
+      talker.logCustom(
         _DioRequestLog(
           message: '${options.uri}',
           requestOptions: options,
@@ -74,34 +76,41 @@ class CustomDioLogger extends Interceptor {
         ),
       );
     } catch (_) {}
+    handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     super.onResponse(response, handler);
     if (!settings.enabled) {
+      handler.next(response);
       return;
     }
 
     final accepted = settings.responseFilter?.call(response) ?? true;
     if (!accepted) {
+      handler.next(response);
       return;
     }
 
     if (response.requestOptions.responseType == ResponseType.bytes || response.requestOptions.responseType == ResponseType.stream) {
-      return talker.logCustom(
-        _DioResponseLog(
-          message: '${response.requestOptions.uri}',
-          response: response,
-          settings: settings.copyWith(
-            printResponseData: false,
+      try {
+        talker.logCustom(
+          _DioResponseLog(
+            message: '${response.requestOptions.uri}',
+            response: response,
+            settings: settings.copyWith(
+              printResponseData: false,
+            ),
           ),
-        ),
-      );
+        );
+      } catch (_) {}
+      handler.next(response);
+      return;
     }
 
     try {
-      return talker.logCustom(
+      talker.logCustom(
         _DioResponseLog(
           message: '${response.requestOptions.uri}',
           response: response,
@@ -109,22 +118,25 @@ class CustomDioLogger extends Interceptor {
         ),
       );
     } catch (_) {}
+    handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     super.onError(err, handler);
     if (!settings.enabled) {
+      handler.reject(err);
       return;
     }
 
     final accepted = settings.errorFilter?.call(err) ?? true;
     if (!accepted) {
+      handler.reject(err);
       return;
     }
 
     try {
-      return talker.logCustom(
+      talker.logCustom(
         _DioErrorLog(
           message: '${err.requestOptions.uri}',
           dioException: err,
@@ -132,6 +144,7 @@ class CustomDioLogger extends Interceptor {
         ),
       );
     } catch (_) {}
+    handler.reject(err);
   }
 }
 

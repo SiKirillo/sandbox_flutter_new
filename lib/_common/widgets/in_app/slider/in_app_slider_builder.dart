@@ -1,6 +1,7 @@
 part of 'in_app_slider_provider.dart';
 
 class InAppSlider extends StatefulWidget {
+  final Object? sliderKey;
   final PageController? controller;
   final Function(int)? onPageChanged;
   final InAppSliderOptions options;
@@ -10,6 +11,7 @@ class InAppSlider extends StatefulWidget {
 
   const InAppSlider({
     super.key,
+    this.sliderKey,
     this.controller,
     this.onPageChanged,
     this.options = const InAppSliderOptions(),
@@ -19,6 +21,7 @@ class InAppSlider extends StatefulWidget {
 
   const InAppSlider.builder({
     super.key,
+    this.sliderKey,
     this.controller,
     this.onPageChanged,
     this.options = const InAppSliderOptions(),
@@ -33,21 +36,36 @@ class InAppSlider extends StatefulWidget {
 class _InAppSliderState extends State<InAppSlider> {
   late final PageController _controller;
   bool get _isBuilder => widget.itemBuilder != null;
+  int get _length => _isBuilder ? widget.itemCount! : widget.children!.length;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? PageController();
     locator<InAppSliderProvider>().init(
+      sliderKey: widget.sliderKey,
       initialIndex: _controller.initialPage,
-      length: _isBuilder ? widget.itemCount! : widget.children!.length,
+      length: _length,
     );
   }
 
+  @override
+  void didUpdateWidget(covariant InAppSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newLength = _length;
+    if (newLength != locator<InAppSliderProvider>().lengthOf(widget.sliderKey)) {
+      locator<InAppSliderProvider>().update(sliderKey: widget.sliderKey, length: newLength);
+    }
+  }
+
+  @override
+  void dispose() {
+    locator<InAppSliderProvider>().remove(widget.sliderKey);
+    super.dispose();
+  }
+
   void _onPageChangedHandler(int index) {
-    setState(() {
-      locator<InAppSliderProvider>().update(index: index);
-    });
+    locator<InAppSliderProvider>().update(sliderKey: widget.sliderKey, index: index);
 
     if (widget.onPageChanged != null) {
       widget.onPageChanged!(index);
@@ -55,7 +73,7 @@ class _InAppSliderState extends State<InAppSlider> {
   }
 
   void _onHorizontalDragUpdateHandler(DragUpdateDetails details) {
-    if (widget.options.physics != NeverScrollableScrollPhysics()) {
+    if (widget.options.physics is! NeverScrollableScrollPhysics) {
       return;
     }
 

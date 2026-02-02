@@ -25,7 +25,7 @@ class CustomText extends StatelessWidget {
     this.textScaleFactor,
     this.textWidthBasis,
     this.isVerticalCentered = true,
-  })  : assert(maxLines == null || maxLines >= 0),
+  })  : assert(maxLines == null || maxLines > 0),
         assert(textScaleFactor == null || textScaleFactor >= 0);
 
   @override
@@ -88,7 +88,7 @@ class CustomRichText extends StatelessWidget {
     this.maxLines,
     this.textScaleFactor,
     this.textWidthBasis,
-  })  : assert(maxLines == null || maxLines >= 0),
+  })  : assert(maxLines == null || maxLines > 0),
         assert(textScaleFactor == null || textScaleFactor >= 0);
 
   @override
@@ -99,7 +99,7 @@ class CustomRichText extends StatelessWidget {
       textAlign: textAlign,
       softWrap: softWrap,
       overflow: overflow,
-      textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : TextScaler.noScaling,
+      textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : MediaQuery.textScalerOf(context),
       textWidthBasis: textWidthBasis,
       maxLines: maxLines,
     );

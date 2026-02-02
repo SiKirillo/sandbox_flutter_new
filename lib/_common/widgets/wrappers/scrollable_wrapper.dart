@@ -26,6 +26,7 @@ class _ScrollableWrapperState extends State<ScrollableWrapper> with WidgetsBindi
   late final ScrollController _scrollController;
   final _wrapperKey = GlobalKey();
   final _contentKey = GlobalKey();
+  Timer? _metricsTimer;
 
   bool _isScrollEnabled = false;
   bool _isScrollToRefreshEnabled = true;
@@ -52,14 +53,19 @@ class _ScrollableWrapperState extends State<ScrollableWrapper> with WidgetsBindi
 
   @override
   void didChangeMetrics() {
-    Future.delayed(OtherConstants.defaultDelayDuration).then((_) {
-      _handleScrollStatus(null);
+    _metricsTimer?.cancel();
+    _metricsTimer = Timer(OtherConstants.defaultDelayDuration, () {
+      if (mounted) _handleScrollStatus(null);
     });
   }
 
   @override
   void dispose() {
+    _metricsTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    if (widget.controller == null) {
+      _scrollController.dispose();
+    }
     super.dispose();
   }
 

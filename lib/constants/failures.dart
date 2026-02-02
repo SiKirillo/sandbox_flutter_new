@@ -1,6 +1,6 @@
 part of '../_common/common.dart';
 
-/// Common
+/// Generic failure for non-HTTP/non-network errors (e.g. validation, local logic).
 class CommonFailure extends Failure {
   const CommonFailure({
     required super.message,
@@ -8,7 +8,7 @@ class CommonFailure extends Failure {
   });
 }
 
-/// Network
+/// Failure when device has no internet (wifi/ethernet/mobile).
 class NetworkFailure extends Failure {
   NetworkFailure() : super(
     message: 'errors.other.no_internet'.tr(),
@@ -16,7 +16,7 @@ class NetworkFailure extends Failure {
   );
 }
 
-/// Http
+/// HTTP/API failure; use [HttpFailure.get] to build from request/response/status.
 class HttpFailure extends Failure {
   final String? errorCode;
 
@@ -26,6 +26,7 @@ class HttpFailure extends Failure {
     this.errorCode,
   });
 
+  /// Builds [HttpFailure] from request/response; uses translations or [errorMessage] as fallback.
   static HttpFailure get({
     required String requestUrl,
     required String requestMethod,
@@ -43,7 +44,10 @@ class HttpFailure extends Failure {
         message = 'errors.http.server_errors.$statusCode'.tr();
       }
 
-      return HttpFailure(message: message ?? 'errors.http.server_errors.5xx'.tr());
+      return HttpFailure(
+        message: message ?? 'errors.http.server_errors.5xx'.tr(),
+        errorCode: errorCode,
+      );
     }
 
     /// If there is no translation of the error
@@ -60,6 +64,7 @@ class HttpFailure extends Failure {
   }
 }
 
+/// Biometric auth failure reasons (e.g. too many attempts, canceled, unsupported).
 enum BiometricFailureType {
   biometricToManyAttempts,
   biometricToManyAttemptsDelay,
@@ -70,6 +75,7 @@ enum BiometricFailureType {
   none,
 }
 
+/// Failure from biometric authentication (see [BiometricFailureType]).
 class BiometricFailure extends Failure {
   const BiometricFailure({
     required super.message,

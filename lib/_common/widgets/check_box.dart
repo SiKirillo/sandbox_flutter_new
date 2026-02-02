@@ -19,21 +19,25 @@ class CustomCheckBox extends StatelessWidget {
     onTap(!value);
   }
 
+  BoxDecoration _borderDecoration() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(options.borderRadius),
+      border: Border.all(
+        color: options.borderColor ?? ColorConstants.checkboxBorder(),
+        width: options.borderWidth,
+      ),
+    );
+  }
+
   Widget _buildCheckbox() {
     if (isProcessing) {
       return Container(
-        key: ValueKey('isProcessing'),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
-          border: Border.all(
-            color: options.borderColor ?? ColorConstants.checkboxBorder(),
-            width: 2.0,
-          ),
-        ),
+        key: const ValueKey('isProcessing'),
+        decoration: _borderDecoration(),
         child: Center(
           child: CustomProgressIndicator.simple(
             size: 10.0,
-            color: ColorConstants.checkboxActive(),
+            color: options.tappedColor ?? ColorConstants.checkboxActive(),
           ),
         ),
       );
@@ -41,52 +45,43 @@ class CustomCheckBox extends StatelessWidget {
 
     if (value) {
       return Container(
-        key: ValueKey('isTapped'),
+        key: const ValueKey('isTapped'),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(options.borderRadius),
           color: options.tappedColor ?? ColorConstants.checkboxActive(),
         ),
         child: Center(
-          child: CustomText(
-            text: String.fromCharCode(Icons.check.codePoint),
-            style: TextStyle(
-              inherit: false,
-              color: options.checkColor ?? ColorConstants.checkboxCheck(),
-              fontSize: 14.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: Icons.check.fontFamily,
-              package: Icons.check.fontPackage,
-            ),
-            isVerticalCentered: false,
+          child: Icon(
+            Icons.check,
+            size: options.checkIconSize,
+            color: options.checkColor ?? ColorConstants.checkboxCheck(),
           ),
         ),
       );
     }
 
     return Container(
-      key: ValueKey('!isTapped'),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4.0),
-        border: Border.all(
-          color: options.borderColor ?? ColorConstants.checkboxBorder(),
-          width: 2.0,
-        ),
-      ),
+      key: const ValueKey('!isTapped'),
+      decoration: _borderDecoration(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: _onPressedHandler,
-      borderRadius: BorderRadius.circular(4.0),
-      child: Ink(
-        height: options.size,
-        width: options.size,
-        padding: options.padding,
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
-          child: _buildCheckbox(),
+    return Semantics(
+      checked: value,
+      enabled: !isProcessing,
+      child: InkWell(
+        onTap: _onPressedHandler,
+        borderRadius: BorderRadius.circular(options.borderRadius),
+        child: Ink(
+          height: options.size,
+          width: options.size,
+          padding: options.padding,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: _buildCheckbox(),
+          ),
         ),
       ),
     );
@@ -96,6 +91,9 @@ class CustomCheckBox extends StatelessWidget {
 class CustomCheckBoxOptions {
   final double size;
   final EdgeInsets padding;
+  final double borderRadius;
+  final double borderWidth;
+  final double checkIconSize;
   final Color? tappedColor;
   final Color? borderColor;
   final Color? checkColor;
@@ -103,6 +101,9 @@ class CustomCheckBoxOptions {
   const CustomCheckBoxOptions({
     this.size = 24.0,
     this.padding = const EdgeInsets.all(2.0),
+    this.borderRadius = 4.0,
+    this.borderWidth = 2.0,
+    this.checkIconSize = 14.0,
     this.tappedColor,
     this.borderColor,
     this.checkColor,

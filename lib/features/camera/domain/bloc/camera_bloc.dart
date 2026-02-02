@@ -1,6 +1,6 @@
 part of '../../camera.dart';
 
-class CameraBloc extends Bloc<CameraBlocEvent, CameraState> {
+class CameraBloc extends BaseBloc<CameraBlocEvent, CameraState> {
   Timer? _delayTimer;
 
   CameraBloc() : super(CameraState.initial()) {
@@ -36,7 +36,7 @@ class CameraBloc extends Bloc<CameraBlocEvent, CameraState> {
     final cameras = await availableCameras();
     zx.setLogEnabled(true);
     await Future.delayed(OtherConstants.defaultAnimationDuration);
-    final isPermissionGranted = await locator<PermissionService>().isCameraGranted;
+    final isPermissionGranted = await locator<PermissionService>().isCameraGranted();
     final supportedOrientations = locator<DeviceService>().orientations(event.context);
 
     emit(state.copyWith(
@@ -193,7 +193,7 @@ class CameraBloc extends Bloc<CameraBlocEvent, CameraState> {
   }
 
   Future<void> _onUpdatePermissionStatus(UpdatePermissionStatus_CameraEvent event, Emitter<CameraState> emit) async {
-    final isPermissionGranted = event.isPermissionGranted ?? await locator<PermissionService>().isCameraGranted;
+    final isPermissionGranted = event.isPermissionGranted ?? await locator<PermissionService>().isCameraGranted();
     emit(state.copyWith(isPermissionGranted: isPermissionGranted));
   }
 

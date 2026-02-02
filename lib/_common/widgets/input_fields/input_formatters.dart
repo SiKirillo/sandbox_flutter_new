@@ -46,6 +46,8 @@ class UncommonSymbolsInputFormatter extends TextInputFormatter {
   }
 }
 
+/// Does not truncate text; only invokes [onOverflow] when length exceeds [maxSymbols].
+/// Callers must handle truncation or state updates in [onOverflow].
 class OverflowInputFormatter extends TextInputFormatter {
   final int maxSymbols;
   final Function(String) onOverflow;
@@ -75,7 +77,7 @@ class OverflowInputFormatter extends TextInputFormatter {
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {
-  static const phoneNumberPrefix = '+998';
+  static const phoneNumberPrefix = '+000';
 
   static String format(String phone) {
     String formatted = phone.replaceAll(RegExp(r'\D'), '');
@@ -84,6 +86,7 @@ class PhoneNumberFormatter extends TextInputFormatter {
     }
 
     if (formatted.isEmpty) return '';
+    /// Incomplete format with missing closing paren is intentional for length < 3.
     if (formatted.length < 3) {
       return '(${formatted.substring(0, formatted.length)}';
     }
@@ -99,7 +102,7 @@ class PhoneNumberFormatter extends TextInputFormatter {
     return '(${formatted.substring(0, 2)}) ${formatted.substring(2, 5)}-${formatted.substring(5, 7)}-${formatted.substring(7)}';
   }
 
-  /// Return string in custom format '+998 (XX) XXX-XX-XX'
+  /// Return string in custom format '+XXX (XX) XXX-XX-XX'
   static String formatForValidation(String phone) {
     final digits = phone.replaceAll(RegExp(r'\D'), '');
     if (digits.length != 9) return '';
@@ -145,6 +148,8 @@ class PhoneNumberFormatter extends TextInputFormatter {
   }
 }
 
+/// Truncates input to [maxLength] characters and clamps selection without using
+/// [LengthLimitingTextInputFormatter.truncate].
 class LengthLimitingTextFieldFormatterFixed extends LengthLimitingTextInputFormatter {
   LengthLimitingTextFieldFormatterFixed(int super.maxLength);
 
@@ -159,8 +164,25 @@ class LengthLimitingTextFieldFormatterFixed extends LengthLimitingTextInputForma
         return oldValue;
       }
 
-      // ignore: invalid_use_of_visible_for_testing_member
-      return LengthLimitingTextInputFormatter.truncate(newValue, maxLength!);
+      final truncatedText = newValue.text.characters.take(maxLength!).join('');
+      final length = truncatedText.length;
+
+      final selection = newValue.selection;
+      final newSelection = TextSelection(
+        baseOffset: selection.baseOffset.clamp(0, length),
+        extentOffset: selection.extentOffset.clamp(0, length),
+      );
+
+      final composing = newValue.composing;
+      final newComposing = composing.isValid && composing.end > length
+          ? (composing.start >= length ? TextRange.collapsed(length) : TextRange(start: composing.start, end: length))
+          : composing;
+
+      return TextEditingValue(
+        text: truncatedText,
+        selection: newSelection,
+        composing: newComposing,
+      );
     }
 
     return newValue;

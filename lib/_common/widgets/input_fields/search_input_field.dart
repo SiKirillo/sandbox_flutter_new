@@ -62,6 +62,15 @@ class _CustomSearchInputFieldState extends State<CustomSearchInputField> {
     widget.controller.addListener(_hintTextHandler);
   }
 
+  @override
+  void dispose() {
+    widget.controller.removeListener(_hintTextHandler);
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+    super.dispose();
+  }
+
   void _hintTextHandler() {
     final isEmpty = widget.controller.value.text.isEmpty;
     if (_isFieldEmpty != isEmpty) {
@@ -84,7 +93,7 @@ class _CustomSearchInputFieldState extends State<CustomSearchInputField> {
     }
   }
 
-  void _onFocusChangeHandler(bool value) async {
+  void _onFocusChangeHandler(bool value) {
     setState(() {
       _isFocused = value;
     });

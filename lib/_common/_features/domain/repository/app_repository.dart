@@ -21,14 +21,14 @@ class AppRepository {
   }
 
   Future<void> logout({bool isExpired = false}) async {
-    LoggerService.logTrace('CommonRepository -> logout(isExpired: $isExpired)');
+    LoggerService.logTrace('AppRepository -> logout(isExpired: $isExpired)');
     locator<InAppOverlayProvider>().show(text: 'button.logout_processing'.tr());
 
     try {
       /// Clear token
       // await locator<PushNotificationService>().clearToken();
     } on Exception catch (e) {
-      LoggerService.logWarning('CommonRepository -> logout() exception: ${e.toString()}');
+      LoggerService.logWarning('AppRepository -> logout() exception: ${e.toString()}');
     } finally {
       /// Clear token
       await Future.delayed(OtherConstants.defaultDelayDuration);

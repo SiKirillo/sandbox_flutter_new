@@ -1,5 +1,6 @@
 part of '../_common/common.dart';
 
+/// Theme-aware color palette; use getters (e.g. [scaffoldBG], [textBlack]) for light/dark.
 class ColorConstants {
   static final light = _LightColorTheme();
   static final dark = _DarkColorTheme();
@@ -96,6 +97,7 @@ class ColorConstants {
       CustomButtonType.blue => _isLightTheme ? light.buttonBlue : light.buttonBlue,
       CustomButtonType.white => _isLightTheme ? light.buttonWhite : light.buttonWhite,
       CustomButtonType.appbar => _isLightTheme ? light.buttonAppBar : light.buttonAppBar,
+      CustomButtonType.attention => _isLightTheme ? light.buttonSmallAttention : light.buttonSmallAttention,
     };
   }
   static Color buttonDisable() => _isLightTheme ? light.buttonDisable : light.buttonDisable;
@@ -104,6 +106,7 @@ class ColorConstants {
       CustomButtonType.blue => _isLightTheme ? light.buttonSplashWhite : light.buttonSplashWhite,
       CustomButtonType.white => _isLightTheme ? light.buttonSplashBlue : light.buttonSplashBlue,
       CustomButtonType.appbar => _isLightTheme ? light.buttonSplashAppBar : light.buttonSplashAppBar,
+      CustomButtonType.attention => _isLightTheme ? light.buttonSmallSplashAttention : light.buttonSmallSplashAttention,
     };
   }
   static Color buttonContent(CustomButtonType type) {
@@ -111,6 +114,7 @@ class ColorConstants {
       CustomButtonType.blue => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
       CustomButtonType.white => _isLightTheme ? light.buttonContentBlue : light.buttonContentBlue,
       CustomButtonType.appbar => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
+      CustomButtonType.attention => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
     };
   }
 
@@ -122,26 +126,29 @@ class ColorConstants {
   static Color buttonOutlineDisable() => _isLightTheme ? light.buttonOutlineDisable : light.buttonOutlineDisable;
   static Color buttonOutlineSplash() => _isLightTheme ? light.buttonOutlineSplash : light.buttonOutlineSplash;
 
-  static Color buttonSmall(CustomSmallButtonType type) {
+  static Color buttonSmall(CustomButtonType type) {
     return switch (type) {
-      CustomSmallButtonType.transparent => _isLightTheme ? light.buttonSmallTransparent : light.buttonSmallTransparent,
-      CustomSmallButtonType.blue => _isLightTheme ? light.buttonSmallBlue : light.buttonSmallBlue,
-      CustomSmallButtonType.attention => _isLightTheme ? light.buttonSmallAttention : light.buttonSmallAttention,
+      CustomButtonType.blue => _isLightTheme ? light.buttonSmallBlue : light.buttonSmallBlue,
+      CustomButtonType.white => _isLightTheme ? light.buttonSmallTransparent : light.buttonSmallTransparent,
+      CustomButtonType.appbar => _isLightTheme ? light.buttonSmallBlue : light.buttonSmallBlue,
+      CustomButtonType.attention => _isLightTheme ? light.buttonSmallAttention : light.buttonSmallAttention,
     };
   }
   static Color buttonSmallDisable() => _isLightTheme ? light.buttonOutlineDisable : light.buttonOutlineDisable;
-  static Color buttonSmallSplash(CustomSmallButtonType type) {
+  static Color buttonSmallSplash(CustomButtonType type) {
     return switch (type) {
-      CustomSmallButtonType.transparent => _isLightTheme ? light.buttonSmallSplashTransparent : light.buttonSmallSplashTransparent,
-      CustomSmallButtonType.blue => _isLightTheme ? light.buttonSmallSplashBlue : light.buttonSmallSplashBlue,
-      CustomSmallButtonType.attention => _isLightTheme ? light.buttonSmallSplashAttention : light.buttonSmallSplashAttention,
+      CustomButtonType.blue => _isLightTheme ? light.buttonSmallSplashBlue : light.buttonSmallSplashBlue,
+      CustomButtonType.white => _isLightTheme ? light.buttonSmallSplashTransparent : light.buttonSmallSplashTransparent,
+      CustomButtonType.appbar => _isLightTheme ? light.buttonSmallSplashBlue : light.buttonSmallSplashBlue,
+      CustomButtonType.attention => _isLightTheme ? light.buttonSmallSplashAttention : light.buttonSmallSplashAttention,
     };
   }
-  static Color buttonSmallContent(CustomSmallButtonType type) {
+  static Color buttonSmallContent(CustomButtonType type) {
     return switch (type) {
-      CustomSmallButtonType.transparent => _isLightTheme ? light.buttonContentBlue : light.buttonContentBlue,
-      CustomSmallButtonType.blue => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
-      CustomSmallButtonType.attention => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
+      CustomButtonType.blue => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
+      CustomButtonType.white => _isLightTheme ? light.buttonContentBlue : light.buttonContentBlue,
+      CustomButtonType.appbar => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
+      CustomButtonType.attention => _isLightTheme ? light.buttonContentWhite : light.buttonContentWhite,
     };
   }
 

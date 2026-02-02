@@ -49,12 +49,15 @@ class CustomListTile extends StatelessWidget {
     final titleWidget = _buildTitleWidget(context);
     final subtitleWidget = _buildSubtitleWidget(context);
 
+    if (titleWidget == null && subtitleWidget == null) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       mainAxisAlignment: options.titleAndSubtitleAlignment,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (titleWidget != null)
-          titleWidget,
+        if (titleWidget != null) titleWidget,
         if (subtitleWidget != null) ...[
           SizedBox(height: options.titleIndent),
           subtitleWidget,
@@ -72,36 +75,39 @@ class CustomListTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: options.borderRadius,
-          child: Ink(
-            height: options.height,
-            padding: options.padding,
-            decoration: BoxDecoration(
-              border: options.border,
-              borderRadius: options.borderRadius,
-              color: options.backgroundColor,
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: options.contentAlignment,
-                    children: <Widget>[
-                      if (leading != null) ...[
-                        leading!,
-                        SizedBox(width: options.leadingIndent),
+          child: OpacityWrapper(
+            isOpaque: isDisabled,
+            child: Ink(
+              height: options.height,
+              padding: options.padding,
+              decoration: BoxDecoration(
+                border: options.border,
+                borderRadius: options.borderRadius,
+                color: options.backgroundColor,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: options.contentAlignment,
+                      children: <Widget>[
+                        if (leading != null) ...[
+                          leading!,
+                          SizedBox(width: options.leadingIndent),
+                        ],
+                        Expanded(
+                          child: _buildTitleAndSubtitleWidget(context),
+                        ),
                       ],
-                      Expanded(
-                        child: _buildTitleAndSubtitleWidget(context),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                if (trailing != null) ...[
-                  SizedBox(width: options.trailingIndent),
-                  trailing!,
+                  if (trailing != null) ...[
+                    SizedBox(width: options.trailingIndent),
+                    trailing!,
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -135,5 +141,5 @@ class CustomListTileOptions {
     this.subtitleStyle,
     this.backgroundColor,
   })  : assert(height == null || height >= 0),
-        assert(titleIndent >= 0 && leadingIndent >= 0);
+        assert(titleIndent >= 0 && leadingIndent >= 0 && trailingIndent >= 0);
 }

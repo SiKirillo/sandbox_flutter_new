@@ -19,7 +19,7 @@ class CustomPopupMenuItem {
 
 class CustomPopupMenu extends StatefulWidget {
   final List<CustomPopupMenuItem> items;
-  final Function(CustomPopupMenuItem) onTap;
+  final ValueChanged<CustomPopupMenuItem> onTap;
   final CustomPopupMenuType type;
   final Widget? icon;
   final TextStyle? textStyle;
@@ -59,6 +59,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
       child: Material(
         color: ColorConstants.transparent,
         child: _DefaultPopupMenuButton<CustomPopupMenuItem>(
+          enabled: widget.items.isNotEmpty,
           iconPadding: EdgeInsets.zero,
           position: PopupMenuPosition.under,
           shape: RoundedRectangleBorder(
@@ -321,9 +322,10 @@ class _DefaultPopupMenuItemState<T, W extends _DefaultPopupMenuItem<T>> extends 
       if (!widget.enabled) WidgetState.disabled,
     };
 
+    final fallbackStyle = theme.textTheme.bodyMedium ?? const TextStyle();
     TextStyle style = theme.useMaterial3
-        ? (widget.labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)! ?? defaults.labelTextStyle!.resolve(states)!)
-        : (widget.textStyle ?? popupMenuTheme.textStyle ?? defaults.textStyle!);
+        ? (widget.labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states) ?? defaults.labelTextStyle?.resolve(states) ?? fallbackStyle)
+        : (widget.textStyle ?? popupMenuTheme.textStyle ?? defaults.textStyle ?? fallbackStyle);
 
     if (!widget.enabled && !theme.useMaterial3) {
       style = style.copyWith(color: theme.disabledColor);
@@ -431,7 +433,7 @@ class _DefaultCheckedPopupMenuItemState<T> extends _DefaultPopupMenuItemState<T,
           titleTextStyle: effectiveLabelTextStyle?.resolve(states),
           leading: FadeTransition(
             opacity: _opacity,
-            child: Icon(_controller.isDismissed ? null : Icons.done),
+            child: Icon(Icons.done),
           ),
           title: widget.child,
         ),
@@ -574,9 +576,9 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     if (selectedItemIndex != null) {
       double selectedItemOffset = _kMenuVerticalPadding;
       for (int index = 0; index < selectedItemIndex!; index += 1) {
-        selectedItemOffset += itemSizes[index]!.height;
+        selectedItemOffset += itemSizes[index]?.height ?? 0.0;
       }
-      selectedItemOffset += itemSizes[selectedItemIndex!]!.height / 2;
+      selectedItemOffset += (itemSizes[selectedItemIndex!]?.height ?? 0.0) / 2.0;
       y = y + buttonHeight / 2.0 - selectedItemOffset;
     }
 

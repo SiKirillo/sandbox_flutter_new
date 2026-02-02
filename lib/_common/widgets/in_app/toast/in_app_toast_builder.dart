@@ -30,7 +30,7 @@ class _InAppToastBuilderState extends State<InAppToastBuilder> {
 
   Future<void> _onProviderListener() async {
     final nextToast = _provider.toast;
-    if (widget.key != nextToast?.key && nextToast != null) {
+    if (widget.key != null && widget.key != nextToast?.key && nextToast != null) {
       return;
     }
 
@@ -43,15 +43,15 @@ class _InAppToastBuilderState extends State<InAppToastBuilder> {
     }
 
     if (nextToast == null && _inAppToast != null) {
-      _onRemoveToastHandler(_inAppToast!);
+      await _onRemoveToastHandler(_inAppToast!);
       return;
     }
 
     if (nextToast != null) {
       if (_inAppToast == null) {
-        _onShowToastHandler(nextToast);
+        await _onShowToastHandler(nextToast);
       } else {
-        _onReplaceToastHandler(nextToast);
+        await _onReplaceToastHandler(nextToast);
       }
     }
   }
@@ -110,7 +110,6 @@ class _InAppToastBuilderState extends State<InAppToastBuilder> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: widget.key,
       onTap: _inAppToast != null
           ? () => _onRemoveToastHandler(_inAppToast!)
           : null,
@@ -235,7 +234,7 @@ class _InAppToastWidgetState extends State<_InAppToastWidget> with SingleTickerP
                         _toast!.onAction!();
                       }
                     },
-                    type: CustomSmallButtonType.attention,
+                    type: CustomButtonType.attention,
                   ),
                 ],
               ],

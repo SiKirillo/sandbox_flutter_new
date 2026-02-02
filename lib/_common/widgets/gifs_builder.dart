@@ -6,7 +6,7 @@ class GifsBuilder extends StatefulWidget {
   final int frameRate;
   final FilterQuality filterQuality;
   final Widget? onLoading;
-  final Function(Object?)? onError;
+  final ValueChanged<Object?>? onError;
 
   const GifsBuilder({
     super.key,
@@ -127,7 +127,9 @@ class GifsBuilder extends StatefulWidget {
         );
       }
 
-      GifsBuilder.cachedGIFs.putIfAbsent(key!, () => frames);
+      if (key != null) {
+        GifsBuilder.cachedGIFs.putIfAbsent(key, () => frames);
+      }
     } catch (e) {
       if (onError == null) {
         rethrow;
@@ -151,6 +153,10 @@ class GifsBuilder extends StatefulWidget {
 
     if (provider is MemoryImage) {
       return '${provider.bytes.toString()}-$frameRate';
+    }
+
+    if (provider is FileImage) {
+      return '${provider.file.path}-$frameRate';
     }
 
     return null;
@@ -183,6 +189,7 @@ class _GifsBuilderState extends State<GifsBuilder> {
   void dispose() {
     _controller.stop();
     _controller.removeListener(_listener);
+   _controller.dispose();
     super.dispose();
   }
 
@@ -199,9 +206,9 @@ class _GifsBuilderState extends State<GifsBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller.status == GifAnimationStatus.loading) {
+    if (_controller.status == GifAnimationStatus.loading || !_controller.hasFrames) {
       return SizedBox(
-        child: widget.onLoading,
+        child: widget.onLoading ?? const SizedBox.shrink(),
       );
     }
 
@@ -293,7 +300,7 @@ class GifController extends ChangeNotifier {
     if (status == GifAnimationStatus.stopped || status == GifAnimationStatus.paused) {
       status = _isInverted ? GifAnimationStatus.reversing : GifAnimationStatus.playing;
 
-      final isValidInitialFrame = initialFrame > 0 && initialFrame < _frames.length - 1;
+      final isValidInitialFrame = initialFrame >= 0 && initialFrame < _frames.length;
       if (isValidInitialFrame) {
         _currentIndex = initialFrame;
       } else {
@@ -320,15 +327,25 @@ class GifController extends ChangeNotifier {
   }
 
   void configure(List<GifFrameItem> frames, {bool updateFrames = false}) {
-    _frames.addAll(frames);
-    if (!updateFrames) {
-      status = GifAnimationStatus.stopped;
-      if (autoPlay) {
-        play();
-      }
-      notifyListeners();
+    if (updateFrames) {
+      _frames.clear();
     }
+    _frames.addAll(frames);
+    if (_frames.isEmpty) {
+      status = GifAnimationStatus.stopped;
+    }
+    if (!updateFrames) {
+      if (_frames.isNotEmpty) {
+        status = GifAnimationStatus.stopped;
+        if (autoPlay) {
+          play();
+        }
+      }
+    }
+    notifyListeners();
   }
+
+  bool get hasFrames => _frames.isNotEmpty;
 }
 
 class GifFrameItem {

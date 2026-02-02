@@ -8,21 +8,6 @@ abstract class AsyncValidator<Params> {
   Future<String?> call(Params inputValue);
 }
 
-// class EmailValidator extends Validator<String> {
-//   @override
-//   String? call(String? inputValue) {
-//     if (inputValue == null || inputValue.isEmpty || inputValue == '') {
-//       return null;
-//     }
-//
-//     if (!email.EmailValidator.validate(inputValue)) {
-//       return 'errors.validators.email.unique_format'.tr();
-//     }
-//
-//     return null;
-//   }
-// }
-
 class NameValidator extends Validator<String> {
   static final uniqueNameFormat = RegExp(r'[a-zA-Zа-яА-ЯіІўЎёЁ\-_\s\d]+');
   static const minSymbolsRule = 3;
@@ -51,6 +36,8 @@ class NameValidator extends Validator<String> {
   }
 }
 
+/// Current format: +XXX (XX) XXX-XX-XX
+/// [uniquePhoneFormat] may diverge from [PhoneNumberFormatter] output (e.g. partial input).
 class PhoneNumberValidator extends Validator<String> {
   static final uniquePhoneFormat = RegExp(r'\+{1}\d{3}\s{1}\({1}\d{2}\){1}\s{1}\d{3}\-{1}\d{2}\-{1}\d{2}');
 

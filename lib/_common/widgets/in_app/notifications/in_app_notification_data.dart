@@ -25,10 +25,12 @@ class InAppNotificationData {
     bool isImportant = false,
     bool isIgnored = false,
   }) {
+    final message = failure.message;
+    final type = InAppNotificationType.warning;
     return InAppNotificationData(
-      id: DateTime.now().hashCode,
-      message: failure.message,
-      type: InAppNotificationType.warning,
+      id: Object.hash(message, type, isImportant, isIgnored),
+      message: message,
+      type: type,
       isImportant: isImportant,
       isIgnored: isIgnored,
     );
@@ -39,10 +41,11 @@ class InAppNotificationData {
     bool isImportant = false,
     bool isIgnored = false,
   }) {
+    final type = InAppNotificationType.warning;
     return InAppNotificationData(
-      id: DateTime.now().hashCode,
+      id: Object.hash(message, type, isImportant, isIgnored),
       message: message,
-      type: InAppNotificationType.warning,
+      type: type,
       isImportant: isImportant,
       isIgnored: isIgnored,
     );
@@ -53,10 +56,11 @@ class InAppNotificationData {
     bool isImportant = false,
     bool isIgnored = false,
   }) {
+    final type = InAppNotificationType.success;
     return InAppNotificationData(
-      id: DateTime.now().hashCode,
+      id: Object.hash(message, type, isImportant, isIgnored),
       message: message,
-      type: InAppNotificationType.success,
+      type: type,
       isImportant: isImportant,
       isIgnored: isIgnored,
     );

@@ -81,7 +81,7 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
   /// Whether only back gestures close to the left (LTR) or right (RTL) screen
   /// edge are counted.
   ///
-  /// This only takes effect if [canSwipe] ist set to `true`.
+  /// This only takes effect if [canSwipe] is set to `true`.
   ///
   /// If set to `true`, this distance can be controlled via
   /// [backGestureDetectionWidth].
@@ -168,11 +168,11 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
     // Fullscreen dialogs aren't dismissible by back swipe.
     if (route.fullscreenDialog) return false;
     // If we're in an animation already, we cannot be manually swiped.
-    if (route.animation!.status != AnimationStatus.completed) return false;
+    if (route.animation?.status != AnimationStatus.completed) return false;
     // If we're being popped into, we also cannot be swiped until the pop above
     // it completes. This translates to our secondary animation being
     // dismissed.
-    if (route.secondaryAnimation!.status != AnimationStatus.dismissed) {
+    if (route.secondaryAnimation?.status != AnimationStatus.dismissed) {
       return false;
     }
     // If we're in a gesture already, we cannot start another.
@@ -452,18 +452,18 @@ class _FancyBackGestureDetectorState<T> extends State<_FancyBackGestureDetector<
   void _handleDragUpdate(DragUpdateDetails details) {
     assert(mounted, 'Widget is not mounted');
     assert(_backGestureController != null, 'Back gesture controller is null');
+    final width = context.size?.width ?? 1.0;
     _backGestureController!.dragUpdate(
-      _convertToLogical(details.primaryDelta! / context.size!.width),
+      _convertToLogical((details.primaryDelta ?? 0.0) / width),
     );
   }
 
   void _handleDragEnd(DragEndDetails details) {
     assert(mounted, 'Widget is not mounted');
     assert(_backGestureController != null, 'Back gesture controller is null');
+    final width = context.size?.width ?? 1.0;
     _backGestureController!.dragEnd(
-      _convertToLogical(
-        details.velocity.pixelsPerSecond.dx / context.size!.width,
-      ),
+      _convertToLogical(details.velocity.pixelsPerSecond.dx / width),
     );
     _backGestureController = null;
   }
@@ -538,11 +538,11 @@ class _CupertinoBackGestureController<T> {
       // We want to cap the animation time, but we want to use a linear curve
       // to determine it.
       final droppedPageForwardAnimationTime = math.min(
-        lerpDouble(
+        (lerpDouble(
           _kMaxDroppedSwipePageForwardAnimationTime,
           0,
           controller.value,
-        )!.floor(),
+        ) ?? 0).floor(),
         _kMaxPageBackAnimationTime,
       );
       controller.animateTo(
@@ -558,11 +558,11 @@ class _CupertinoBackGestureController<T> {
       // destination.
       if (controller.isAnimating) {
         // Otherwise, use a custom popping animation duration and curve.
-        final droppedPageBackAnimationTime = lerpDouble(
+        final droppedPageBackAnimationTime = (lerpDouble(
           0,
           _kMaxDroppedSwipePageForwardAnimationTime,
           controller.value,
-        )!.floor();
+        ) ?? 0).floor();
         controller.animateBack(
           0,
           duration: Duration(milliseconds: droppedPageBackAnimationTime),

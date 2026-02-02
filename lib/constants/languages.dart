@@ -1,9 +1,11 @@
 part of '../_common/common.dart';
 
+/// Supported app languages; maps to/from [Locale] and DTO codes.
 enum LanguageType {
   en,
   ru;
 
+  /// Parses language code string (e.g. 'en', 'ru') to [LanguageType].
   static LanguageType fromDto(String code) {
     return switch (code) {
       'en' => LanguageType.en,
@@ -12,10 +14,11 @@ enum LanguageType {
     };
   }
 
+  /// Converts [Locale] to [LanguageType]; defaults to en if unknown.
   static LanguageType fromLocale(Locale locale) {
     switch (locale.languageCode) {
       case 'en': {
-        return LanguageType.ru;
+        return LanguageType.en;
       }
 
       case 'ru': {
@@ -40,6 +43,7 @@ enum LanguageType {
     }
   }
 
+  /// Converts to Flutter [Locale] for [EasyLocalization] / [context.locale].
   Locale toLocale() {
     return switch (this) {
       LanguageType.en => Locale.fromSubtags(languageCode: 'en'),

@@ -1,5 +1,6 @@
 part of '../../common.dart';
 
+/// Modal dialog with [title], [content], and optional cancel/action buttons; [onPopInvoked] for result.
 class CustomActionDialog extends StatefulWidget {
   final dynamic title;
   final dynamic content;
@@ -39,10 +40,10 @@ class CustomActionDialog extends StatefulWidget {
 }
 
 class _CustomActionDialogState extends State<CustomActionDialog> {
-  bool _isRequestInProgress = false;
+  bool _isProcessing = false;
   bool get _isMaterialDesign => kIsWeb || Platform.isAndroid;
 
-  /// Измеряет ширину текста с учетом стиля
+  /// Measures text width with the given style.
   double _measureTextWidth(String text, TextStyle style) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
@@ -53,64 +54,62 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
     return textPainter.width;
   }
 
-  /// Определяет оптимальную ориентацию кнопок на основе длины текста
+  /// Chooses horizontal vs vertical button layout based on total button text width.
   bool _shouldUseHorizontalLayout() {
     if (!widget.isHorizontalPosition) return false;
 
-    // Получаем стиль для кнопок (точно такой же как в _buildMaterialButton)
     final buttonStyle = Theme.of(context).textTheme.displayMedium?.copyWith(
-          height: 1.0,
-          color: _getButtonColor(false),
-        );
+      height: 1.0,
+      color: _getButtonColor(false),
+    );
 
     if (buttonStyle == null) return false;
 
-    // Измеряем ширину текста кнопок
-    double totalTextWidth = 0;
+    double totalTextWidth = 0.0;
     if (widget.cancelText != null) {
       totalTextWidth += _measureTextWidth(widget.cancelText!, buttonStyle);
     }
+
     if (widget.actionText != null) {
       totalTextWidth += _measureTextWidth(widget.actionText!, buttonStyle);
     }
 
-    // Добавляем padding кнопок (8px с каждой стороны для каждой кнопки)
     final buttonCount = (widget.cancelText != null ? 1 : 0) + (widget.actionText != null ? 1 : 0);
-    totalTextWidth += buttonCount * 16; // 8px * 2 стороны для каждой кнопки
+    totalTextWidth += buttonCount * (8.0 * 2.0);
 
-    // Добавляем отступ между кнопками (если есть обе кнопки)
     if (widget.cancelText != null && widget.actionText != null) {
-      totalTextWidth += 16; // SizedBox(width: 16.0)
+      totalTextWidth += 16.0;
     }
 
-    // Максимальная ширина диалога: 280px
-    // Actions padding: 8px с каждой стороны (fromLTRB(8.0, 0.0, 8.0, 8.0))
-    // Доступная ширина для кнопок: 280 - 16 = 264px
-    const availableWidth = 264.0;
-
-    return totalTextWidth <= availableWidth;
+    return totalTextWidth <= 264.0;
   }
 
   Future<void> _onCancelHandler() async {
-    if (_isRequestInProgress) return;
+    if (_isProcessing) return;
     if (widget.onCancel != null) {
-      _isRequestInProgress = true;
-      await widget.onCancel!();
-      _isRequestInProgress = false;
+      _isProcessing = true;
+      try {
+        await widget.onCancel!();
+      } finally {
+        if (mounted) _isProcessing = false;
+      }
     }
 
-    Navigator.of(context).pop(false);
+    if (mounted) Navigator.of(context).pop(false);
   }
 
   Future<void> _onActionHandler() async {
-    if (_isRequestInProgress) return;
+    if (_isProcessing) return;
     if (widget.onAction != null) {
-      _isRequestInProgress = true;
-      await widget.onAction!();
-      _isRequestInProgress = false;
+      _isProcessing = true;
+      try {
+        await widget.onAction!();
+      } finally {
+        if (mounted) _isProcessing = false;
+      }
     }
 
-    Navigator.of(context).pop(true);
+    if (mounted) Navigator.of(context).pop(true);
   }
 
   Color _getButtonColor(bool isAction) {
@@ -147,7 +146,7 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
   }
 
   /// Widgets
-  Widget _buildTitleWidget() {
+  Widget _buildTitleWidget({bool includeIcon = true}) {
     late final Widget title;
     if (widget.title is String) {
       if (_isMaterialDesign) {
@@ -160,11 +159,11 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
         title = CustomText(
           text: widget.title,
           style: Theme.of(context).dialogTheme.titleTextStyle?.copyWith(
-                fontFamily: 'OpenSans',
-                fontSize: 16.0,
-                fontWeight: FontWeight.w600,
-                height: 22.0 / 16.0,
-              ),
+            fontFamily: 'OpenSans',
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+            height: 22.0 / 16.0,
+          ),
           textAlign: TextAlign.center,
           maxLines: 3,
         );
@@ -173,20 +172,21 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
       title = widget.title;
     }
 
+    final showIcon = includeIcon && _isMaterialDesign && widget.type != CustomActionDialogType.none;
+    if (!showIcon) return title;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.type != CustomActionDialogType.none) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SvgPicture.asset(
-              widget.type == CustomActionDialogType.error ? ImageConstants.icError : ImageConstants.icInfo,
-              height: 26.0,
-              width: 26.0,
-            ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SvgPicture.asset(
+            widget.type == CustomActionDialogType.error ? ImageConstants.icError : ImageConstants.icInfo,
+            height: 26.0,
+            width: 26.0,
           ),
-          SizedBox(height: 12.0),
-        ],
+        ),
+        SizedBox(height: 12.0),
         title,
       ],
     );
@@ -205,11 +205,11 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
       return CustomText(
         text: widget.content!,
         style: Theme.of(context).dialogTheme.contentTextStyle?.copyWith(
-              fontFamily: 'OpenSans',
-              fontSize: 13.0,
-              fontWeight: FontWeight.w500,
-              height: 18.0 / 13.0,
-            ),
+          fontFamily: 'OpenSans',
+          fontSize: 13.0,
+          fontWeight: FontWeight.w500,      
+          height: 18.0 / 13.0,
+        ),
         maxLines: 10,
       );
     }
@@ -264,9 +264,9 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
         ),
         splashColor: _getButtonColor(isAction),
         textStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
-              height: 1.0,
-              color: _getButtonColor(isAction),
-            ),
+          height: 1.0,
+          color: _getButtonColor(isAction),
+        ),
       ),
       isExpanded: false,
     );
@@ -281,12 +281,12 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
       child: CustomText(
         text: text,
         style: Theme.of(context).dialogTheme.titleTextStyle?.copyWith(
-              fontFamily: 'OpenSans',
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              height: 22.0 / 16.0,
-              color: _getButtonColor(isAction),
-            ),
+          color: _getButtonColor(isAction),
+          fontFamily: 'OpenSans',
+          fontSize: 16.0,
+          fontWeight: FontWeight.w400,
+          height: 22.0 / 16.0,
+        ),
       ),
     );
   }
@@ -343,8 +343,8 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
         brightness: Theme.of(context).brightness,
       ),
       child: cupertino.CupertinoAlertDialog(
-        title: _buildTitleWidget(),
-        content: _buildContentWidget(),
+        title: _buildTitleWidget(includeIcon: false),
+        content: widget.content != null ? _buildContentWidget() : null,
         actions: widget.isReversedPosition ? buttons.reversed.toList() : buttons,
       ),
     );

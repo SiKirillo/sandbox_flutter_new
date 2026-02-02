@@ -1,5 +1,7 @@
 part of '../common.dart';
 
+/// Service for device and app metadata. Call [init] before using
+/// [getFlavorMode], [getDeviceDescription], [getBuildPlaceholderLabel], etc.
 class DeviceService {
   late final PackageInfo _packageData;
   final _deviceData = DeviceInfoPlugin();
@@ -13,7 +15,7 @@ class DeviceService {
   DeviceInfoPlugin get deviceData => _deviceData;
   bool get isPhysicalDevice => _isPhysicalDevice;
 
-  Future<DeviceData> get getDeviceDescription async {
+  Future<DeviceData> getDeviceDescription() async {
     return DeviceData.fromData(Platform.operatingSystem, packageData, await _deviceData.deviceInfo);
   }
 

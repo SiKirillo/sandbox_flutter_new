@@ -21,7 +21,10 @@ class InAppToastProvider with ChangeNotifier {
       formattedToast = InAppToastData(
         id: formattedToast.id,
         key: formattedToast.key,
+        label: formattedToast.label,
         description: 'errors.other.none'.tr(),
+        actionText: formattedToast.actionText,
+        onAction: formattedToast.onAction,
       );
     }
 

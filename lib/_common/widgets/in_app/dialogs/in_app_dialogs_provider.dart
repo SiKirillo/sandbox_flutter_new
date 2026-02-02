@@ -18,7 +18,7 @@ class InAppDialogsProvider {
     BuildContext? context,
     bool withBarrierColor = true,
     bool withBlur = true,
-    bool isScrollable = false,
+    bool isDraggable = false,
     bool withSafeArea = true,
   }) async {
     LoggerService.logTrace('InAppDialogsProvider -> showBottomSheet()');
@@ -39,7 +39,7 @@ class InAppDialogsProvider {
       barrierColor: withBarrierColor ? null : ColorConstants.transparent,
       backgroundColor: ColorConstants.transparent,
       isScrollControlled: true,
-      enableDrag: isScrollable,
+      enableDrag: isDraggable,
       useRootNavigator: true,
       useSafeArea: withSafeArea,
       context: buildContext!,

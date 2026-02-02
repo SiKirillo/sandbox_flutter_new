@@ -1,12 +1,13 @@
 part of '../common.dart';
 
+/// Camera and location permission checks and requests; shows custom dialogs/bottom sheets.
 class PermissionService {
-  Future<bool> get isCameraGranted async {
+  Future<bool> isCameraGranted() async {
     final status = await Permission.camera.status;
     return status == PermissionStatus.granted || status == PermissionStatus.limited;
   }
 
-  Future<bool> get isLocationGranted async {
+  Future<bool> isLocationGranted() async {
     final serviceStatus = await Permission.location.serviceStatus;
     final status = await Permission.location.status;
     return serviceStatus == ServiceStatus.enabled && (status == PermissionStatus.granted || status == PermissionStatus.limited);
@@ -84,7 +85,7 @@ class PermissionService {
 
     bool isLocationPermissionProvided = status == PermissionStatus.granted || status == PermissionStatus.limited;
     if (isLocationPermissionProvided) {
-      bool isServiceEnabled = await locator<LocationService>().isLocationServiceGranted;
+      bool isServiceEnabled = await locator<LocationService>().isLocationServiceGranted();
       if (!isServiceEnabled) {
         isServiceEnabled = await locator<LocationService>().requestLocationServicePermission();
         if (!isServiceEnabled) {
@@ -176,18 +177,19 @@ class _LocationServiceDisabledBottomSheet extends StatefulWidget {
 }
 
 class _LocationServiceDisabledBottomSheetState extends State<_LocationServiceDisabledBottomSheet> {
-  bool _isRequestInProgress = false;
+  bool _isProcessing = false;
 
   Future<void> _onOpenAppSettingsHandler() async {
-    if (_isRequestInProgress) return;
-    _isRequestInProgress = true;
-
-    await Future.delayed(OtherConstants.defaultAnimationDuration);
-    await openAppSettings();
-    await Future.delayed(OtherConstants.defaultAnimationDuration);
-    AppRouter.configs.pop(true);
-
-    _isRequestInProgress = false;
+    if (_isProcessing) return;
+    _isProcessing = true;
+    try {
+      await Future.delayed(OtherConstants.defaultAnimationDuration);
+      await openAppSettings();
+      await Future.delayed(OtherConstants.defaultAnimationDuration);
+      AppRouter.configs.pop(true);
+    } finally {
+      _isProcessing = false;
+    }
   }
 
   void _onCancelHandler() {
@@ -292,7 +294,7 @@ class _LocationPermissionBottomSheet extends StatelessWidget {
             content: 'button.prohibit'.tr(),
             options: CustomButtonOptions(type: CustomButtonType.white),
             onTap: () {
-              AppRouter.configs.pop();
+              AppRouter.configs.pop(false);
             },
           ),
         ],

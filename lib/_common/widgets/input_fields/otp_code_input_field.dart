@@ -110,7 +110,10 @@ class _CustomOtpCodeInputFieldState extends State<CustomOtpCodeInputField> with 
     }
 
     _isPasteEvent = false;
-    _onFieldSubmittedHandler();
+    final full = _codeControllers.map((c) => c.value.text).join();
+    if (full.length == _codeControllers.length) {
+      _onFieldSubmittedHandler();
+    }
   }
 
   void _onEditingCompleteHandler(int index) {
@@ -298,6 +301,9 @@ class _OtpCodeInputTextFieldState extends State<_OtpCodeInputTextField> {
   @override
   void dispose() {
     widget.controller.removeListener(_checkInputFieldStatus);
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -312,7 +318,7 @@ class _OtpCodeInputTextFieldState extends State<_OtpCodeInputTextField> {
     }
   }
 
-  void _onFocusChangeHandler(bool value) async {
+  void _onFocusChangeHandler(bool value) {
     if (widget.onFocusChange != null) {
       widget.onFocusChange!(value);
     }

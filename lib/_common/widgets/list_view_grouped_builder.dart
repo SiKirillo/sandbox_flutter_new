@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// A grouped [ListView.separated] built from [items] via [groupBy]/[groupSort], with optional custom group builder and separators.
 class CustomGroupedListViewBuilder<T, E> extends StatelessWidget {
   final ScrollController? controller;
   final List<T> items;
@@ -41,7 +42,11 @@ class CustomGroupedListViewBuilder<T, E> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final preparedGroups = items.map(groupBy).toList()..sort(groupComparator);
+    final preparedGroups = items.map(groupBy).toList();
+    if (groupComparator != null) {
+      preparedGroups.sort(groupComparator!);
+    }
+
     final sortedGroups = preparedGroups.toSet();
     final sortedItems = <E, List<T>>{};
 
@@ -53,12 +58,13 @@ class CustomGroupedListViewBuilder<T, E> extends StatelessWidget {
       sortedItems.putIfAbsent(group, () => preparedItems);
     }
 
+    final entries = sortedItems.entries.toList();
     return CustomScrollbar(
       isScrollbarVisible: isScrollbarVisible,
       controller: controller,
       child: ListView.separated(
         controller: controller,
-        itemCount: sortedItems.length,
+        itemCount: entries.length,
         physics: isScrollEnabled
             ? OtherConstants.defaultScrollPhysics
             : NeverScrollableScrollPhysics(),
@@ -67,7 +73,7 @@ class CustomGroupedListViewBuilder<T, E> extends StatelessWidget {
         reverse: isReversed,
         padding: padding,
         itemBuilder: (_, index) {
-          final grouped = sortedItems.entries.toList()[index];
+          final grouped = entries[index];
           if (groupCustomBuilder != null) {
             return groupCustomBuilder!(_, grouped.key, grouped.value, index);
           }
@@ -85,9 +91,7 @@ class CustomGroupedListViewBuilder<T, E> extends StatelessWidget {
             ],
           );
         },
-        separatorBuilder: groupSeparatorBuilder ?? (_, index) {
-          return SizedBox();
-        },
+        separatorBuilder: groupSeparatorBuilder ?? (_, index) => const SizedBox.shrink(),
       ),
     );
   }

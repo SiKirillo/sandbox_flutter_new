@@ -15,17 +15,24 @@ abstract class AbstractRemoteDatasource {
     receiveTimeout: Duration(seconds: 30),
   ));
 
+  /// Configures Dio client with logging and custom interceptor (token refresh, 5xx handler). Call at app start.
   static Future<void> init({
     Future<void> Function()? onRefreshToken,
     Future<void> Function()? onExpiredToken,
+    void Function(String message)? onServerError,
   }) async {
     client.interceptors.clear();
     client.interceptors.addAll([
       LoggerService.talkerDio,
-      _CustomHttpInterceptor(onRefreshToken: onRefreshToken, onExpiredToken: onExpiredToken),
+      _CustomHttpInterceptor(
+        onRefreshToken: onRefreshToken,
+        onExpiredToken: onExpiredToken,
+        onServerError: onServerError,
+      ),
     ]);
   }
 
+  /// Clears queued requests that were waiting for token refresh (e.g. on logout).
   static void clearRetryQueue() {
     _requestsNeedRetry.clear();
   }
@@ -289,10 +296,12 @@ class _CustomInterceptorEntity {
 class _CustomHttpInterceptor extends Interceptor {
   final Future<void> Function()? onRefreshToken;
   final Future<void> Function()? onExpiredToken;
+  final void Function(String message)? onServerError;
 
   _CustomHttpInterceptor({
     this.onRefreshToken,
     this.onExpiredToken,
+    this.onServerError,
   });
 
   bool _isRefreshing = false;
@@ -392,24 +401,16 @@ class _CustomHttpInterceptor extends Interceptor {
       }
     }
 
-    /// Backend error
-    if (error.response?.statusCode != null && error.response!.statusCode! >= 500 && error.response!.statusCode! < 600) {
+    /// Backend error (5xx)
+    final statusCode = error.response?.statusCode;
+    if (statusCode != null && statusCode >= 500 && statusCode < 600) {
       try {
         if (_isBackendProcessing) {
           return;
         }
 
         _isBackendProcessing = true;
-        locator<InAppOverlayProvider>().hide();
-        locator<InAppNotificationProvider>().addNotification(InAppNotificationData.warning(
-          message: 'notifications.other.backend_error'.tr(),
-        ));
-
-        // final traceId = error.response?.data is Map && error.response?.data['traceId'] is String? ? error.response?.data['traceId'] : null;
-        // await locator<InAppDialogsProvider>().showDialogCustom(child: BackendErrorDialog(
-        //   errorCode: traceId,
-        // ));
-
+        onServerError?.call('notifications.other.backend_error'.tr());
         _isBackendProcessing = false;
         return handler.reject(error);
       } on Exception catch (e) {
@@ -425,6 +426,8 @@ class _CustomHttpInterceptor extends Interceptor {
   }
 }
 
+/// Holds access and optional refresh token used by [AbstractRemoteDatasource]
+/// for Authorization headers and token refresh flow.
 class DioTokenEntity {
   final String token;
   final String? refreshToken;
@@ -435,7 +438,8 @@ class DioTokenEntity {
   });
 }
 
-/// Use to ignore bad certificate failure
+/// Overrides to ignore bad certificate (e.g. self-signed in dev).
+/// **Security:** Do not use in production; it disables certificate validation.
 class CustomHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {

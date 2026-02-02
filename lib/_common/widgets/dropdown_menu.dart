@@ -50,6 +50,13 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
     return value.toString();
   }
 
+  String _itemToDisplayString(T item) {
+    if (widget.valueFormatter != null) {
+      return widget.valueFormatter!(item);
+    }
+    return item.toString();
+  }
+
   Color _getBorderColor() {
     /// On disabled
     if (widget.isDisabled) {
@@ -80,7 +87,8 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
   }
 
   TextStyle _getTextStyle() {
-    final textStyle = Theme.of(context).inputDecorationTheme.labelStyle!.copyWith(
+    final baseStyle = Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodyLarge ?? const TextStyle();
+    final textStyle = baseStyle.copyWith(
       color: ColorConstants.dropdownText(),
       decorationThickness: 0.0,
     );
@@ -140,7 +148,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
       ),
       child: AnimatedDefaultTextStyle(
         duration: Duration.zero,
-        style: Theme.of(context).inputDecorationTheme.errorStyle!.copyWith(
+        style: (Theme.of(context).inputDecorationTheme.errorStyle ?? const TextStyle()).copyWith(
           fontSize: 11.0,
           fontWeight: FontWeight.w500,
           height: 14.0 / 11.0,
@@ -157,6 +165,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final buttonDecoration = _getButtonDecoration(context);
     return AbsorbPointer(
       absorbing: widget.isDisabled,
       child: Column(
@@ -170,7 +179,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
                   value: item,
                   alignment: Alignment.centerLeft,
                   child: CustomText(
-                    text: widget.valueFormatter!(item).toString(),
+                    text: _itemToDisplayString(item),
                     style: Theme.of(context).inputDecorationTheme.hintStyle,
                   ),
                 );
@@ -181,7 +190,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
                 height: widget.options.height,
                 width: widget.options.width,
                 padding: widget.options.padding,
-                decoration: _getButtonDecoration(context),
+                decoration: buttonDecoration,
                 child: Row(
                   children: [
                     Expanded(
@@ -206,7 +215,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
                 ),
               ),
               buttonStyleData: ButtonStyleData(
-                decoration: _getButtonDecoration(context),
+                decoration: buttonDecoration,
               ),
               dropdownStyleData: DropdownStyleData(
                 width: widget.options.width,
@@ -237,12 +246,17 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
 }
 
 class CustomDropdownOptions {
-  final double height, itemHeight;
+  final double height;
+  final double itemHeight;
   final double? width;
-  final EdgeInsets padding, dropdownPadding, itemPadding;
-  final BorderRadiusGeometry borderRadius, dropdownBorderRadius;
-  final BoxDecoration? decoration, dropdownDecoration;
-  final Color? color, splashColor;
+  final EdgeInsets padding;
+  final EdgeInsets dropdownPadding;
+  final EdgeInsets itemPadding;
+  final BorderRadiusGeometry borderRadius;
+  final BorderRadiusGeometry dropdownBorderRadius;
+  final BoxDecoration? decoration;
+  final BoxDecoration? dropdownDecoration;
+  final Color? splashColor;
 
   const CustomDropdownOptions({
     this.height = 56.0,
@@ -255,7 +269,6 @@ class CustomDropdownOptions {
     this.dropdownBorderRadius = const BorderRadius.all(Radius.circular(8.0)),
     this.decoration,
     this.dropdownDecoration,
-    this.color,
     this.splashColor,
   });
 }

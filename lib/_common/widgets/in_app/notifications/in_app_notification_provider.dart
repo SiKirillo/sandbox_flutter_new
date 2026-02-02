@@ -12,6 +12,7 @@ class InAppNotificationProvider with ChangeNotifier {
   final _inAppNotifications = <InAppNotificationData>[];
   InAppNotificationData? get notification => _inAppNotifications.isNotEmpty ? _inAppNotifications[0] : null;
 
+  /// When [withValidation] is true, skips adding only if the same message+type is already the current (first) notification.
   void addNotification(
     InAppNotificationData notification, {
     bool withValidation = false,
@@ -49,8 +50,8 @@ class InAppNotificationProvider with ChangeNotifier {
     }
   }
 
-  void addManyNotification(List<InAppNotificationData> notifications) {
-    LoggerService.logTrace('InAppNotificationProvider -> addManyNotification()');
+  void addNotifications(List<InAppNotificationData> notifications) {
+    LoggerService.logTrace('InAppNotificationProvider -> addNotifications()');
     for (final notification in notifications) {
       addNotification(notification);
     }

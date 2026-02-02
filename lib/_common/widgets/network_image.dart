@@ -1,10 +1,11 @@
 part of '../common.dart';
 
 typedef CustomNetworkImageCallback = Future<dartz.Either<Failure, File>> Function();
+typedef CustomNetworkImageOnFinish = void Function(File?, Size);
 
 class CustomNetworkImage extends StatefulWidget {
   final CustomNetworkImageCallback onRequest;
-  final Function(File?, Size)? onFinish;
+  final CustomNetworkImageOnFinish? onFinish;
   final double? height, width;
   final BoxConstraints? constraints;
   final double placeholderHeight, placeholderWidth;
@@ -44,7 +45,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             });
           }
 
-          if (widget.onFinish != null) {
+          if (mounted && widget.onFinish != null) {
             widget.onFinish!(null, Size(widget.placeholderWidth, widget.placeholderHeight));
           }
         },
@@ -56,8 +57,10 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
           }
 
           if (widget.onFinish != null) {
-            decodeImageFromList(result.readAsBytesSync()).then((result) {
-              widget.onFinish!(_image, Size(result.width.toDouble(), result.height.toDouble()));
+            decodeImageFromList(result.readAsBytesSync()).then((image) {
+              if (mounted && widget.onFinish != null) {
+                widget.onFinish!(_image, Size(image.width.toDouble(), image.height.toDouble()));
+              }
             });
           }
         },
@@ -79,6 +82,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                 height: widget.placeholderHeight,
                 width: widget.placeholderWidth,
                 decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorder(),
                   borderRadius: widget.borderRadius,
                 ),
               );
@@ -101,10 +105,19 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             height: widget.placeholderHeight,
             width: widget.placeholderWidth,
             decoration: BoxDecoration(
+              color: ColorConstants.textFieldBorder(),
               borderRadius: widget.borderRadius,
             ),
           ),
-          if (_image == null && _failure == null)
+          if (_failure != null)
+            Center(
+              child: SvgPicture.asset(
+                ImageConstants.icTextfieldOk,
+                height: 20.0,
+                width: 20.0,
+              ),
+            )
+          else if (_image == null)
             Center(
               child: CustomProgressIndicator.simple(
                 size: math.max(widget.placeholderWidth * 0.3, 20.0),

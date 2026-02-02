@@ -54,7 +54,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   }
 
   Future<void> _handlePermissionStatus() async {
-    if (!await locator<PermissionService>().isCameraGranted) {
+    if (!await locator<PermissionService>().isCameraGranted()) {
       final isPermissionGranted = await locator<PermissionService>().requestCameraPermission(context: context);
       locator<CameraBloc>().add(UpdatePermissionStatus_CameraEvent(isPermissionGranted: isPermissionGranted));
       await Future.delayed(OtherConstants.defaultAnimationDuration);
@@ -70,15 +70,11 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
         onResult: (result) {
           _scannerAreaKey.currentState?.startAnimation();
           if (widget.settings.onScanned != null) {
-            widget.settings.onScanned!(CameraResultEntity(
-              codes: {code},
-            ));
+            widget.settings.onScanned!((image: null, codes: {code}));
           }
 
           if (widget.settings.type == CameraType.scannerOne) {
-            AppRouter.configs.pop(CameraResultEntity(
-              codes: locator<CameraBloc>().state.scannedCodes,
-            ));
+            AppRouter.configs.pop((image: null, codes: locator<CameraBloc>().state.scannedCodes));
           }
         },
       ),
@@ -98,7 +94,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   }
 
   void _onSendPhotoAndScansHandler() {
-    AppRouter.configs.pop(CameraResultEntity(
+    AppRouter.configs.pop((
       image: widget.settings.type == CameraType.camera ? locator<CameraBloc>().state.imageFile : null,
       codes: widget.settings.type != CameraType.camera ? locator<CameraBloc>().state.scannedCodes : null,
     ));

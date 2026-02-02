@@ -1,3 +1,8 @@
+/// Central library that aggregates common utilities, entities, extensions,
+/// app feature (bloc, repository, storage), providers, services, and widgets
+/// for the application. Import this single file to access shared functionality.
+library;
+
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
@@ -93,11 +98,9 @@ part 'services/permission_service.dart';
 part 'widgets/animations/animated_switcher.dart';
 part 'widgets/animations/cross_fade_animation.dart';
 
-part 'widgets/buttons/small_button.dart';
 part 'widgets/buttons/button.dart';
 part 'widgets/buttons/hyperlink_button.dart';
 part 'widgets/buttons/icon_button.dart';
-part 'widgets/buttons/outline_button.dart';
 part 'widgets/buttons/tab_button.dart';
 part 'widgets/buttons/text_button.dart';
 
@@ -123,7 +126,6 @@ part 'widgets/wrappers/scaffold_wrapper.dart';
 part 'widgets/wrappers/scrollable_wrapper.dart';
 
 part 'widgets/app_bar.dart';
-part 'widgets/appbar_indicator.dart';
 part 'widgets/check_box.dart';
 part 'widgets/divider.dart';
 part 'widgets/dropdown_menu.dart';

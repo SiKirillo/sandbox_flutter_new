@@ -39,15 +39,15 @@ class _InAppNotificationBuilderState extends State<InAppNotificationBuilder> {
     }
 
     if (nextNotification?.isImportant == true && _inAppNotification != null) {
-      _onRemoveNotificationHandler(_inAppNotification!);
+      await _onRemoveNotificationHandler(_inAppNotification!);
       return;
     }
 
     if (nextNotification != null) {
       if (_inAppNotification == null) {
-        _onShowNotificationHandler(nextNotification);
+        await _onShowNotificationHandler(nextNotification);
       } else {
-        _onReplaceNotificationHandler(nextNotification);
+        await _onReplaceNotificationHandler(nextNotification);
       }
     }
   }
@@ -64,7 +64,7 @@ class _InAppNotificationBuilderState extends State<InAppNotificationBuilder> {
       });
     }
 
-    if (_inAppNotification?.type == InAppNotificationType.warning) {
+    if (notification.type == InAppNotificationType.warning) {
       await Future.delayed(_warningDuration);
     } else {
       await Future.delayed(_successDuration);
@@ -114,7 +114,6 @@ class _InAppNotificationBuilderState extends State<InAppNotificationBuilder> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: widget.key,
       onTap: _inAppNotification != null
           ? () => _onRemoveNotificationHandler(_inAppNotification!)
           : null,

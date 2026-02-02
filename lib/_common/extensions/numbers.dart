@@ -1,6 +1,7 @@
 part of '../common.dart';
 
 extension NumbersExtension on num {
+  /// Formats integer with thousands separator (dot) using [LocaleProvider] for [language].
   String toFormattedWithDots({LanguageType? language}) {
     return localization.NumberFormat('#,###', locator<LocaleProvider>().getLocale(language: language).toString()).format(truncate()).replaceAll(' ', '.');
   }

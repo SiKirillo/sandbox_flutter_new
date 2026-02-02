@@ -22,7 +22,7 @@ class DialogWrapper extends StatelessWidget {
   })  : assert(label is String || label is Widget || label == null),
         assert(description is String || description is Widget || description == null);
 
-  Future<void> _closeButtonHandler(BuildContext context) async {
+  void _closeButtonHandler(BuildContext context) {
     if (onClose != null) {
       onClose!();
     } else {

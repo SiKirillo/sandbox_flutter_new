@@ -1,8 +1,7 @@
 part of '../../../common.dart';
 
-abstract class AppBlocEvent{}
+abstract class AppBlocEvent {}
 
-/// Common
 class Init_AppEvent extends AppBlocEvent {}
 
 class UpdateStatus_AppEvent extends AppBlocEvent {
@@ -13,7 +12,6 @@ class UpdateStatus_AppEvent extends AppBlocEvent {
   });
 }
 
-/// Service
 class Reset_AppEvent extends AppBlocEvent {
   final bool isSessionExpired;
 

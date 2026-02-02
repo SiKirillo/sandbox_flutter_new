@@ -1,6 +1,7 @@
 part of '../common.dart';
 
-class CustomListViewAnimatedBuilder<T> extends StatelessWidget {
+/// An [AnimatedList.separated] wrapped in [CustomScrollbar] with insert/remove animations.
+class CustomListViewAnimatedBuilder extends StatelessWidget {
   final ScrollController? controller;
   final int initialItemCount;
   final EdgeInsets padding;
@@ -25,11 +26,12 @@ class CustomListViewAnimatedBuilder<T> extends StatelessWidget {
     required this.separatorBuilder,
     required this.removedSeparatorBuilder,
     required this.itemBuilder,
-  });
+  }) : assert(initialItemCount >= 0);
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollbar(
+      controller: controller,
       isScrollbarVisible: isScrollbarVisible,
       child: AnimatedList.separated(
         controller: controller,

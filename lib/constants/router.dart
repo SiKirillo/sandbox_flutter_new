@@ -1,5 +1,7 @@
 part of '../_common/common.dart';
 
+/// GoRouter configuration: routes (splash, camera, logger), [key], and [configs].
+/// Use [defaultSwipeablePageBuilder] for swipe-back page construction.
 class AppRouter {
   static GlobalKey<NavigatorState> get key => _rootRouterKey;
   static final _rootRouterKey = GlobalKey<NavigatorState>();
@@ -59,6 +61,7 @@ class AppRouter {
     routingConfig: _routingConfig,
   );
 
+  /// Builds a [SwipeablePage] for [screen]; [canSwipe] enables edge-swipe back (disabled on web).
   static SwipeablePage defaultSwipeablePageBuilder(
     LocalKey? key,
     String? path,

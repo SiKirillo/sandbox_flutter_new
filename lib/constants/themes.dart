@@ -1,5 +1,6 @@
 part of '../_common/common.dart';
 
+/// App theme data: [light] and [dark] [ThemeData] with custom colors and typography.
 class ThemeConstants {
   static ThemeData get light => ThemeData.lerp(ThemeData.light(), _lightTheme, 1.0).copyWith(
     /// You need to disable the ripple effect during the transition animation

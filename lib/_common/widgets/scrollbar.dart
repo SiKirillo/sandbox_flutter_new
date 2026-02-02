@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// A scrollbar wrapping [CupertinoScrollbar] with optional visibility and shared [controller].
 class CustomScrollbar extends StatelessWidget {
   final bool isScrollbarVisible;
   final Widget child;

@@ -1,8 +1,10 @@
 part of '../common.dart';
 
-/// Abstract model of shared preferences
-/// To separate all other implementations we use personal id and build mode name
-/// To save some storage during logout/login process its id must start with 'safe_'
+/// Abstract model of shared preferences.
+/// To separate all other implementations we use personal id and build mode name.
+/// To save some storage during logout/login process its id must start with 'safe_'.
+///
+/// **Must call [init] before using any instance** (e.g. during app bootstrap).
 class AbstractSharedPreferencesDatasource {
   final String id;
   static late SharedPreferences _preferences;
@@ -31,6 +33,11 @@ class AbstractSharedPreferencesDatasource {
   }
 
   Future<void> write(String key, dynamic value) async {
+    if (value == null) {
+      await delete(key);
+      return;
+    }
+
     switch (value.runtimeType) {
       case const (String): {
         await _preferences.setString(_getStorageID(key), value);

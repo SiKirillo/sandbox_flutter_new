@@ -17,8 +17,6 @@ class FirebaseRemoteConfigService {
         _remoteConfig.fetchAndActivate(),
         _remoteConfig.setDefaults(_getFlavorModeSettings(flavor)),
       ]);
-
-      await _remoteConfig.fetchAndActivate();
     } on Exception catch (e) {
       LoggerService.logError('FirebaseRemoteConfigService -> init()', exception: e);
     }

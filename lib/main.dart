@@ -19,21 +19,34 @@ import 'features/camera/camera.dart';
 Future<void> main() async {
   runZonedGuarded(
     () async {
-      await _init();
-      runApp(
-        EasyLocalization(
-          supportedLocales: LocaleProvider.supportedLocales,
-          startLocale: locator<LocaleProvider>().language.toLocale(),
-          fallbackLocale: Locale('en'),
-          assetLoader: RootBundleAssetLoader(),
-          // assetLoader: MergedAssetLoader(),
-          path: 'assets/translations',
-          useOnlyLangCode: true,
-          useFallbackTranslations: true,
-          ignorePluralRules: false,
-          child: FlutterApp(),
-        ),
-      );
+      try {
+        await _init();
+        runApp(
+          EasyLocalization(
+            supportedLocales: LocaleProvider.supportedLocales,
+            startLocale: locator<LocaleProvider>().language.toLocale(),
+            fallbackLocale: Locale('en'),
+            assetLoader: RootBundleAssetLoader(),
+            // assetLoader: MergedAssetLoader(),
+            path: 'assets/translations',
+            useOnlyLangCode: true,
+            useFallbackTranslations: true,
+            ignorePluralRules: false,
+            child: FlutterApp(),
+          ),
+        );
+      } catch (error, stackTrace) {
+        LoggerService.logError('Init failed', exception: error, stackTrace: stackTrace);
+        runApp(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text('Something went wrong. Please restart the app.'),
+              ),
+            ),
+          ),
+        );
+      }
     },
     (error, stacktrace) {
       LoggerService.logError('Uncaught app exception', exception: error, stackTrace: stacktrace);
@@ -45,7 +58,6 @@ Future<void> main() async {
 
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   /// Init services
   initLocator();
@@ -64,6 +76,10 @@ Future<void> _init() async {
     AbstractRemoteDatasource.init(
       // onRefreshToken: () => locator<AuthRepository>().refreshToken(),
       // onExpiredToken: () => locator<AppRepository>().logout(isExpired: true),
+      onServerError: (message) {
+        locator<InAppOverlayProvider>().hide();
+        locator<InAppNotificationProvider>().addNotification(InAppNotificationData.warning(message: message));
+      },
     ),
   ]);
 

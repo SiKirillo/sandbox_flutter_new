@@ -1,5 +1,6 @@
 part of '../common.dart';
 
+/// A gradient overlay with configurable [size] and [direction], e.g. for scroll fade.
 class CustomScrollOpacityGradient extends StatelessWidget {
   final double size;
   final List<Color?> colors;
@@ -12,7 +13,9 @@ class CustomScrollOpacityGradient extends StatelessWidget {
     required this.colors,
     this.stops = const [0.05, 1.0],
     this.direction = Axis.vertical,
-  }) : assert(size >= 0.0);
+  })  : assert(size >= 0.0),
+        assert(colors.length > 0),
+        assert(stops.length == colors.length);
 
   @override
   Widget build(BuildContext context) {

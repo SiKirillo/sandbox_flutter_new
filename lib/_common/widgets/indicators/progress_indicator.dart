@@ -16,7 +16,7 @@ class CustomProgressIndicator extends StatelessWidget {
     this.indicatorValue,
     this.indicatorColor,
     this.withShadow = true,
-  }) : assert(iconSize >= 0.0 && indicatorSize >= 0.0);
+  }) : assert(iconSize > 0.0 && indicatorSize > 0.0);
 
   static Widget simple({double? size, double? value, Color? color}) {
     return SizedBox.square(

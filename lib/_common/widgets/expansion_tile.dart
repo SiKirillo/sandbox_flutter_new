@@ -1,29 +1,29 @@
 part of '../common.dart';
 
-class CustomExpansionTitle extends StatefulWidget {
+class CustomExpansionTile extends StatefulWidget {
   final dynamic label;
   final dynamic content;
   final ValueChanged<bool>? onTap;
-  final CustomExpansionTitleOptions options;
+  final CustomExpansionTileOptions options;
   final bool isExpanded;
   final bool isDisabled;
 
-  const CustomExpansionTitle({
+  const CustomExpansionTile({
     super.key,
     required this.label,
     required this.content,
     this.onTap,
-    this.options = const CustomExpansionTitleOptions(),
+    this.options = const CustomExpansionTileOptions(),
     this.isExpanded = false,
     this.isDisabled = false,
   })  : assert(label is Widget || label is String),
         assert(content is Widget || content is String);
 
   @override
-  State<CustomExpansionTitle> createState() => _CustomExpansionTitleState();
+  State<CustomExpansionTile> createState() => _CustomExpansionTileState();
 }
 
-class _CustomExpansionTitleState extends State<CustomExpansionTitle> with SingleTickerProviderStateMixin {
+class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final CurvedAnimation _heightFactor;
   bool _isExpanded = false;
@@ -32,7 +32,7 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 200),
+      duration: widget.options.animationDuration,
       vsync: this,
     );
 
@@ -41,14 +41,15 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
       curve: Curves.easeIn,
     );
 
-    _isExpanded = PageStorage.maybeOf(context)?.readState(context) as bool? ?? widget.isExpanded;
+    final state = PageStorage.maybeOf(context)?.readState(context);
+    _isExpanded = state is bool ? state : widget.isExpanded;
     if (_isExpanded) {
       _animationController.value = 1.0;
     }
   }
 
   @override
-  void didUpdateWidget(covariant CustomExpansionTitle oldWidget) {
+  void didUpdateWidget(covariant CustomExpansionTile oldWidget) {
     if (widget.isExpanded != _isExpanded) {
       _onToggleExpansionHandler(withCallback: false);
     }
@@ -86,7 +87,11 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
 
   Widget _buildLabelWidget() {
     if (widget.label is String) {
-      final textStyle = widget.options.buttonTextStyle ?? Theme.of(context).textTheme.displayMedium;
+      final theme = Theme.of(context).textTheme;
+      final textStyle = widget.options.buttonTextStyle ??
+          theme.displayMedium ??
+          theme.bodyLarge ??
+          const TextStyle();
       return CustomText(
         text: widget.label,
         style: textStyle,
@@ -100,7 +105,11 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
 
   Widget _buildContentWidget() {
     if (widget.content is String) {
-      final textStyle = widget.options.contentTextStyle ?? Theme.of(context).textTheme.displayMedium;
+      final theme = Theme.of(context).textTheme;
+      final textStyle = widget.options.contentTextStyle ??
+          theme.displayMedium ??
+          theme.bodyLarge ??
+          const TextStyle();
       return CustomText(
         text: widget.content,
         style: textStyle,
@@ -116,13 +125,13 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
     return Stack(
       children: [
         Positioned.fill(
-          top: 12.0,
+          top: widget.options.contentBorderRadius,
           child: Container(
             decoration: BoxDecoration(
-              color: widget.options.contentColor,
+              color: widget.options.contentColor ?? ColorConstants.cardBG(),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12.0),
-                bottomRight: Radius.circular(12.0),
+                bottomLeft: Radius.circular(widget.options.contentBorderRadius),
+                bottomRight: Radius.circular(widget.options.contentBorderRadius),
               ),
             ),
           ),
@@ -143,7 +152,7 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
                   constraints: BoxConstraints(
                     minHeight: SizeConstants.defaultButtonHeight,
                   ),
-                  padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+                  padding: widget.options.buttonPadding,
                   color: widget.options.buttonColor,
                 ),
                 isDisabled: widget.isDisabled,
@@ -161,13 +170,13 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
     );
   }
 
-  Widget _buildHiddenDescription(bool icClosed) {
+  Widget _buildHiddenDescription(bool isClosed) {
     return Offstage(
-      offstage: icClosed,
+      offstage: isClosed,
       child: TickerMode(
-        enabled: !icClosed,
+        enabled: !isClosed,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          padding: widget.options.contentPadding,
           child: Row(
             children: [
               Flexible(
@@ -182,9 +191,9 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
 
   @override
   Widget build(BuildContext context) {
-    final icClosed = !_isExpanded && _animationController.isDismissed;
-    final isShouldRemove = icClosed && !widget.options.withMaintainState;
-    final hiddenWidget = _buildHiddenDescription(icClosed);
+    final isClosed = !_isExpanded && _animationController.isDismissed;
+    final isShouldRemove = isClosed && !widget.options.withMaintainState;
+    final hiddenWidget = _buildHiddenDescription(isClosed);
 
     return AnimatedBuilder(
       animation: _animationController.view,
@@ -194,13 +203,23 @@ class _CustomExpansionTitleState extends State<CustomExpansionTitle> with Single
   }
 }
 
-class CustomExpansionTitleOptions {
+class CustomExpansionTileOptions {
   final bool withMaintainState;
-  final Color? buttonColor, contentColor;
-  final TextStyle? buttonTextStyle, contentTextStyle;
+  final Duration animationDuration;
+  final double contentBorderRadius;
+  final EdgeInsets buttonPadding;
+  final EdgeInsets contentPadding;
+  final Color? buttonColor;
+  final Color? contentColor;
+  final TextStyle? buttonTextStyle;
+  final TextStyle? contentTextStyle;
 
-  const CustomExpansionTitleOptions({
+  const CustomExpansionTileOptions({
     this.withMaintainState = false,
+    this.animationDuration = const Duration(milliseconds: 200),
+    this.contentBorderRadius = 12.0,
+    this.buttonPadding = const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+    this.contentPadding = const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
     this.buttonColor,
     this.contentColor,
     this.buttonTextStyle,

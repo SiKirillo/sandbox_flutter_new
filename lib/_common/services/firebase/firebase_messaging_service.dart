@@ -10,9 +10,11 @@ class FirebaseMessagingService {
     // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
+  /// [onTokenUpdated] and [onMessageClicked] are reserved for when FCM/local
+  /// notifications are enabled (see commented code below).
   static Future<void> init({
-    required Function(String) onTokenUpdated,
-    required Function(Map<String, dynamic>) onMessageClicked,
+    Function(String)? onTokenUpdated,
+    Function(Map<String, dynamic>)? onMessageClicked,
   }) async {
     LoggerService.logTrace('FirebaseMessagingService -> init()');
 
@@ -39,7 +41,6 @@ class FirebaseMessagingService {
       );
     }
 
-    await FirebaseMessaging.instance.getAPNSToken();
     // await _requestFcmToken(onTokenUpdated);
     // _initNotifications(onMessageClicked);
 
