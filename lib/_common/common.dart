@@ -102,7 +102,6 @@ part 'widgets/buttons/button.dart';
 part 'widgets/buttons/hyperlink_button.dart';
 part 'widgets/buttons/icon_button.dart';
 part 'widgets/buttons/tab_button.dart';
-part 'widgets/buttons/text_button.dart';
 
 part 'widgets/dialogs/action_dialog.dart';
 

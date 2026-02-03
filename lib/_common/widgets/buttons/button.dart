@@ -4,6 +4,7 @@ enum CustomButtonVariant {
   filled,
   outline,
   small,
+  text,
 }
 
 enum CustomButtonType {
@@ -49,9 +50,7 @@ class CustomButton extends StatelessWidget {
           color: isDisabled ? ColorConstants.buttonTextDisable() : null,
           border: isDisabled
               ? null
-              : Border.all(
-                  color: options.color ?? ColorConstants.buttonOutline(),
-                ),
+              : Border.all(color: options.color ?? ColorConstants.buttonOutline()),
           borderRadius: options.borderRadius,
         );
 
@@ -62,6 +61,14 @@ class CustomButton extends StatelessWidget {
               : ColorConstants.buttonSmall(options.type)),
           borderRadius: options.borderRadius,
         );
+
+      case CustomButtonVariant.text:
+        return BoxDecoration(
+          color: isDisabled
+              ? ColorConstants.buttonTextDisable()
+              : ColorConstants.buttonText(),
+          borderRadius: options.borderRadius,
+        );
     }
   }
 
@@ -69,12 +76,15 @@ class CustomButton extends StatelessWidget {
     switch (variant) {
       case CustomButtonVariant.filled:
         return options.splashColor ?? ColorConstants.buttonSplash(options.type);
-      
+
       case CustomButtonVariant.outline:
         return options.splashColor ?? ColorConstants.buttonOutlineSplash();
-      
+
       case CustomButtonVariant.small:
         return options.splashColor ?? ColorConstants.buttonSmallSplash(options.type);
+
+      case CustomButtonVariant.text:
+        return options.splashColor ?? ColorConstants.buttonTextSplash();
     }
   }
 
@@ -93,11 +103,17 @@ class CustomButton extends StatelessWidget {
               ? ColorConstants.buttonContentDisable()
               : options.color ?? ColorConstants.buttonContentBlue();
           break;
-          
+
         case CustomButtonVariant.small:
           contentColor = isDisabled
               ? ColorConstants.buttonContentDisable()
               : ColorConstants.buttonSmallContent(options.type);
+          break;
+
+        case CustomButtonVariant.text:
+          contentColor = isDisabled
+              ? ColorConstants.buttonContentDisable()
+              : options.color ?? ColorConstants.buttonContentBlue();
           break;
       }
 
@@ -216,6 +232,36 @@ class CustomSmallButton extends StatelessWidget {
         type: type,
       ),
       variant: CustomButtonVariant.small,
+      isExpanded: isExpanded,
+      isDisabled: isDisabled,
+    );
+  }
+}
+
+/// Thin wrapper for text style; delegates to [CustomButton] with [CustomButtonVariant.text].
+class CustomTextButton extends StatelessWidget {
+  final dynamic content;
+  final VoidCallback onTap;
+  final CustomButtonOptions options;
+  final bool isExpanded;
+  final bool isDisabled;
+
+  const CustomTextButton({
+    super.key,
+    required this.content,
+    required this.onTap,
+    this.options = const CustomButtonOptions(),
+    this.isExpanded = true,
+    this.isDisabled = false,
+  }) : assert(content is Widget || content is String);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomButton(
+      content: content,
+      onTap: onTap,
+      options: options,
+      variant: CustomButtonVariant.text,
       isExpanded: isExpanded,
       isDisabled: isDisabled,
     );
