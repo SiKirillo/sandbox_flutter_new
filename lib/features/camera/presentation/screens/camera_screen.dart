@@ -66,7 +66,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       code: code,
       type: widget.settings.type,
       allowedFormats: widget.settings.allowedFormats,
-      onResponse: BlocEventResponse(
+      onResponse: CustomBlocResponse(
         onResult: (result) {
           _scannerAreaKey.currentState?.startAnimation();
           if (widget.settings.onScanned != null) {
@@ -104,7 +104,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
     locator<CameraBloc>().add(UpdateFocusPosition_CameraEvent(
       details: details,
       constraints: constraints,
-      onResponse: BlocEventResponse(
+      onResponse: CustomBlocResponse(
         onResult: (result) {
           _focusAreaKey.currentState?.startAnimation();
         },
@@ -1111,7 +1111,7 @@ class _CameraBottomOverlay extends StatelessWidget {
 
                         return CustomIconButton(
                           content: SvgPicture.asset(
-                            ImageConstants.icSuccess,
+                            ImageConstants.check,
                             height: buttonSize * 0.6,
                             width: buttonSize * 0.6,
                             fit: BoxFit.fill,
@@ -1627,7 +1627,7 @@ class _PicturePreviewOverlay extends StatelessWidget {
           children: [
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icWarning,
+                ImageConstants.alertTriangle,
                 height: borderSize * 0.6,
                 width: borderSize * 0.6,
                 fit: BoxFit.fill,
@@ -1640,7 +1640,7 @@ class _PicturePreviewOverlay extends StatelessWidget {
             ),
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icSuccess,
+                ImageConstants.check,
                 height: borderSize * 0.6,
                 width: borderSize * 0.6,
                 fit: BoxFit.fill,

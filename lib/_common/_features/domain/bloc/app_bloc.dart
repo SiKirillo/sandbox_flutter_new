@@ -2,7 +2,7 @@ part of '../../../common.dart';
 
 /// Global app BLoC: handles init, status updates, reset/logout, and failure handling.
 /// Use [Init_AppEvent] on startup; [UpdateStatus_AppEvent] for auth flow; [Reset_AppEvent] for logout.
-class AppBloc extends BaseBloc<AppBlocEvent, AppState> {
+class AppBloc extends CustomBloc<AppBlocEvent, AppState> {
   AppBloc(super.initialState) {
     /// Common
     on<Init_AppEvent>(_onInit);

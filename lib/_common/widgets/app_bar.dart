@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isDisabled = false,
   }) : assert(content is String || content is Widget || content == null);
 
-  static Widget? buildContentWidget(
+  static Widget buildContentWidget(
     dynamic content, {
     required BuildContext context,
     CustomAppBarOptions? options,
@@ -41,11 +41,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    return content;
+    return content ?? SizedBox.shrink();
   }
 
-  static Widget? buildLeadingWidget(
-    Widget? leading, {
+  static Widget buildLeadingWidget(
+    Widget leading, {
     required BuildContext context,
     VoidCallback? onBackCallback,
     CustomAppBarOptions? options,
@@ -53,10 +53,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (options?.withBackButton == true) {
       return CustomIconButton(
         content: SvgPicture.asset(
-          ImageConstants.icBack,
-          colorFilter: options?.iconColor != null
-              ? ColorFilter.mode(options!.iconColor!, BlendMode.srcIn)
-              : null,
+          ImageConstants.arrowLeft,
+          colorFilter: options?.iconColor != null ? ColorFilter.mode(options!.iconColor!, BlendMode.srcIn) : null,
         ),
         onTap: onBackCallback ?? () => Navigator.of(context).pop(),
         options: CustomButtonOptions(
@@ -69,10 +67,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (options?.withCloseButton == true) {
       return CustomIconButton(
         content: SvgPicture.asset(
-          ImageConstants.icClose,
-          colorFilter: options?.iconColor != null
-              ? ColorFilter.mode(options!.iconColor!, BlendMode.srcIn)
-              : null,
+          ImageConstants.close,
+          colorFilter: options?.iconColor != null ? ColorFilter.mode(options!.iconColor!, BlendMode.srcIn) : null,
         ),
         onTap: onBackCallback ?? () => Navigator.of(context).pop(),
         options: CustomButtonOptions(
@@ -87,13 +83,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final leadingWidget = CustomAppBar.buildLeadingWidget(
-      leading,
-      context: context,
-      onBackCallback: onGoBack,
-      options: options,
-    );
-
     /// You can use MorphingAppBar after plugin fix compilation with flutter 3.35+ with heroTag: options.heroTag
     return PreferredSize(
       preferredSize: preferredSize,
@@ -102,53 +91,55 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: AbsorbPointer(
           absorbing: isDisabled,
           child: AppBar(
-          // heroTag: options.heroTag,
-          backgroundColor: options.backgroundColor ?? Theme.of(context).appBarTheme.backgroundColor,
-          shadowColor: options.shadowColor ?? Theme.of(context).appBarTheme.shadowColor,
-          elevation: options.withElevation ? Theme.of(context).appBarTheme.elevation : 0.0,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          toolbarHeight: preferredSize.height,
-          titleSpacing: 0.0,
-          title: Padding(
-            padding: options.appBarPadding,
-            child: Row(
-              crossAxisAlignment: options.appBarAlign,
-              children: [
-                if (leadingWidget != null)
-                  leadingWidget,
-                Expanded(
-                  child: Padding(
-                    padding: options.contentPadding,
+            // heroTag: options.heroTag,
+            backgroundColor: options.backgroundColor ?? Theme.of(context).appBarTheme.backgroundColor,
+            shadowColor: options.shadowColor ?? Theme.of(context).appBarTheme.shadowColor,
+            elevation: options.withElevation ? Theme.of(context).appBarTheme.elevation : 0.0,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            toolbarHeight: preferredSize.height,
+            titleSpacing: 0.0,
+            title: Padding(
+              padding: options.padding,
+              child: Row(
+                mainAxisAlignment: options.mainAxisAlignment,
+                crossAxisAlignment: options.crossAxisAlignment,
+                children: [
+                  if (leading != null)
+                    CustomAppBar.buildLeadingWidget(
+                      leading!,
+                      context: context,
+                      onBackCallback: onGoBack,
+                      options: options,
+                    ),
+                  Expanded(
                     child: CustomAppBar.buildContentWidget(
                       content,
                       context: context,
                       options: options,
                     ),
                   ),
-                ),
-                if (actions != null)
-                  actions!,
-              ],
+                  if (actions != null) actions!,
+                ],
+              ),
             ),
-          ),
-          bottom: bottomContent != null
-              ? PreferredSize(
-                  preferredSize: Size.zero,
-                  child: bottomContent!,
-                )
-              : null,
-          shape: options.withDivider
-              ? Border(
-                  bottom: BorderSide(
-                    color: ColorConstants.appBarDivider(),
-                    width: 1.0,
+            bottom: bottomContent != null
+                ? PreferredSize(
+                    preferredSize: Size.zero,
+                    child: bottomContent!,
+                  )
+                : null,
+            shape: options.withDivider
+                ? Border(
+                    bottom: BorderSide(
+                      color: ColorConstants.appBarDivider(),
+                      width: 1.0,
+                    ),
+                  )
+                : RoundedRectangleBorder(
+                    borderRadius: options.borderRadius ?? BorderRadius.zero,
                   ),
-                )
-              : RoundedRectangleBorder(
-                  borderRadius: options.borderRadius ?? BorderRadius.zero,
-                ),
-        ),
+          ),
         ),
       ),
     );
@@ -245,13 +236,6 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    final leadingWidget = CustomAppBar.buildLeadingWidget(
-      widget.leading,
-      context: context,
-      onBackCallback: widget.onGoBack,
-      options: widget.options,
-    );
-
     /// You can use MorphingSliverAppBar after plugin fix compilation with flutter 3.35+ with heroTag: options.heroTag
     return PreferredSize(
       preferredSize: widget.preferredSize,
@@ -270,58 +254,62 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
         title: Container(
           height: widget.preferredSize.height,
           padding: EdgeInsets.fromLTRB(
-            widget.options.appBarPadding.left + ResponsiveWrapper.responsivePadding(context),
-            widget.options.appBarPadding.top,
-            widget.options.appBarPadding.right + ResponsiveWrapper.responsivePadding(context),
-            widget.options.appBarPadding.bottom,
+            widget.options.padding.left + ResponsiveWrapper.responsivePadding(context),
+            widget.options.padding.top,
+            widget.options.padding.right + ResponsiveWrapper.responsivePadding(context),
+            widget.options.padding.bottom,
           ),
           decoration: BoxDecoration(
             borderRadius: widget.options.borderRadius,
             color: widget.options.backgroundColor ?? Theme.of(context).appBarTheme.backgroundColor,
           ),
           child: Row(
-            crossAxisAlignment: widget.options.appBarAlign,
+            mainAxisAlignment: widget.options.mainAxisAlignment,
+            crossAxisAlignment: widget.options.crossAxisAlignment,
             children: [
-              if (leadingWidget != null)
-                leadingWidget,
+              if (widget.leading != null)
+                CustomAppBar.buildLeadingWidget(
+                  widget.leading!,
+                  context: context,
+                  onBackCallback: widget.onGoBack,
+                  options: widget.options,
+                ),
               Expanded(
-                child: Padding(
-                  padding: widget.options.contentPadding,
-                  child: CustomAppBar.buildContentWidget(
-                    widget.content,
-                    context: context,
-                    options: widget.options,
-                  ),
+                child: CustomAppBar.buildContentWidget(
+                  widget.content,
+                  context: context,
+                  options: widget.options,
                 ),
               ),
-              if (widget.actions != null)
-                widget.actions!,
+              if (widget.actions != null) widget.actions!,
             ],
           ),
         ),
-        flexibleSpace: widget.flexibleContent != null ? SafeArea(
-          child: ClipRRect(
-            borderRadius: widget.options.borderRadius ?? BorderRadius.zero,
-            child: Stack(
-              children: [
-                widget.flexibleContent!,
-                Positioned(
-                  top: widget.preferredSize.height - 16.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: CustomScrollOpacityGradient(
-                    size: 4.0 + 16.0,
-                    colors: [
-                      widget.options.backgroundColor,
-                      widget.options.backgroundColor?.withValues(alpha: 0.0),
+        flexibleSpace: widget.flexibleContent != null
+            ? SafeArea(
+                child: ClipRRect(
+                  borderRadius: widget.options.borderRadius ?? BorderRadius.zero,
+                  child: Stack(
+                    children: [
+                      widget.flexibleContent!,
+                      Positioned(
+                        top: widget.preferredSize.height - 16.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: CustomScrollOpacityGradient(
+                          size: 4.0 + 16.0,
+                          colors: [
+                            widget.options.backgroundColor,
+                            widget.options.backgroundColor?.withValues(alpha: 0.0),
+                          ],
+                          stops: [0.8, 1.0],
+                        ),
+                      ),
                     ],
-                    stops: [0.8, 1.0],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ) : null,
+              )
+            : null,
         shape: widget.options.withDivider
             ? Border(
                 bottom: BorderSide(
@@ -340,11 +328,13 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> with WidgetsBin
 class CustomAppBarOptions {
   /// Reserved for future MorphingAppBar use; not passed to [AppBar] / [SliverAppBar] yet.
   final String heroTag;
-  final EdgeInsets appBarPadding, contentPadding;
+  final EdgeInsets padding;
   final BorderRadius? borderRadius;
-  final CrossAxisAlignment appBarAlign;
+  final MainAxisAlignment mainAxisAlignment;
+  final CrossAxisAlignment crossAxisAlignment;
   final TextStyle? contentStyle;
   final TextAlign textAlign;
+
   /// When both are true, [buildLeadingWidget] shows back button (first check wins).
   final bool withBackButton;
   final bool withCloseButton;
@@ -355,13 +345,13 @@ class CustomAppBarOptions {
 
   const CustomAppBarOptions({
     this.heroTag = 'MorphingAppBar',
-    this.appBarPadding = const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-    this.contentPadding = const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+    this.padding = const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
     this.borderRadius,
-    this.appBarAlign = CrossAxisAlignment.center,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
     this.contentStyle,
     this.textAlign = TextAlign.center,
-    this.withBackButton = true,
+    this.withBackButton = false,
     this.withCloseButton = false,
     this.withElevation = true,
     this.withDivider = false,

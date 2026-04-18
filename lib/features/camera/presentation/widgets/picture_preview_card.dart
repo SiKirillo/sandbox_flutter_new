@@ -79,7 +79,7 @@ class _PicturePreviewCardState extends State<PicturePreviewCard> {
     return Padding(
       padding: EdgeInsets.all(11.0),
       child: SvgPicture.asset(
-        ImageConstants.icPlus,
+        ImageConstants.plus,
       ),
     );
   }
@@ -111,7 +111,7 @@ class _PicturePreviewCardState extends State<PicturePreviewCard> {
             child: InkWell(
               onTap: widget.onClear!,
               child: SvgPicture.asset(
-                ImageConstants.icClose,
+                ImageConstants.close,
               ),
             ),
           ),

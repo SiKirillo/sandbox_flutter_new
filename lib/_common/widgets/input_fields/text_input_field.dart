@@ -274,7 +274,7 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
           if (widget.options.withClearButton && !_isFieldEmpty && _isFocused)
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icTextfieldClean,
+                ImageConstants.closeCircle,
                 height: 16.0,
                 width: 16.0,
               ),
@@ -288,7 +288,7 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
             SizedBox(width: 4.0),
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icTextfieldOk,
+                ImageConstants.check,
                 height: 16.0,
                 width: 16.0,
               ),
@@ -312,7 +312,7 @@ class _CustomTextInputFieldState extends State<CustomTextInputField> {
               SizedBox(width: 4.0),
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icTextfieldEye,
+                ImageConstants.eye,
                 height: 16.0,
                 width: 16.0,
                 colorFilter: ColorFilter.mode(_getIconColor(isProtected: true), BlendMode.srcIn),
@@ -583,7 +583,7 @@ class _TextInputFieldErrorState extends State<_TextInputFieldError> with SingleT
                   child: Row(
                     children: [
                       SvgPicture.asset(
-                        ImageConstants.icError,
+                        ImageConstants.alertTriangle,
                         height: 16.0,
                         width: 16.0,
                       ),

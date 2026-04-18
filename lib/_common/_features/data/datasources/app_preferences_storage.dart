@@ -1,6 +1,6 @@
 part of '../../../common.dart';
 
-class AppPreferencesStorage extends AbstractSharedPreferencesDatasource {
+class AppPreferencesStorage extends CustomPreferencesDatasource {
   AppPreferencesStorage() : super(id: 'core');
 
   Future<bool> readInitialConfiguration() async {

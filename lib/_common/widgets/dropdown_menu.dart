@@ -206,7 +206,7 @@ class _CustomDropdownMenuState<T> extends State<CustomDropdownMenu<T>> {
                       width: 8.0,
                     ),
                     SvgPicture.asset(
-                      ImageConstants.icDropDown,
+                      ImageConstants.chevronDown,
                       height: 16.0,
                       width: 16.0,
                       colorFilter: ColorFilter.mode(_getIconColor(), BlendMode.srcIn),

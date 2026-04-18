@@ -211,7 +211,7 @@ class _InAppToastWidgetState extends State<_InAppToastWidget> with SingleTickerP
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SvgPicture.asset(
-            ImageConstants.icError,
+            ImageConstants.alertTriangle,
             height: 16.0,
             width: 16.0,
           ),
@@ -247,7 +247,7 @@ class _InAppToastWidgetState extends State<_InAppToastWidget> with SingleTickerP
     return Row(
       children: [
         SvgPicture.asset(
-          ImageConstants.icError,
+          ImageConstants.alertTriangle,
           height: 16.0,
           width: 16.0,
         ),

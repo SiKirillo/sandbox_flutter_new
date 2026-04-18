@@ -1,6 +1,6 @@
 part of '../../camera.dart';
 
-class CameraState extends BlocState {
+class CameraState extends CustomBlocState {
   final List<CameraDescription> cameras;
   final CameraController? controller;
   final List<DeviceOrientation> orientations;

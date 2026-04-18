@@ -5,11 +5,11 @@ part of '../common.dart';
 /// To save some storage during logout/login process its id must start with 'safe_'.
 ///
 /// **Must call [init] before using any instance** (e.g. during app bootstrap).
-class AbstractSharedPreferencesDatasource {
+class CustomPreferencesDatasource {
   final String id;
   static late SharedPreferences _preferences;
 
-  const AbstractSharedPreferencesDatasource({required this.id});
+  const CustomPreferencesDatasource({required this.id});
 
   static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();

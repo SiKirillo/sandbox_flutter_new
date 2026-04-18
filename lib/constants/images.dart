@@ -20,21 +20,29 @@ class ImageConstants {
   }
 
   /// Service
-  static const icDropDown = 'assets/icons/_common/ic_drop_down.svg';
-  static const icSearch = 'assets/icons/_common/ic_search.svg';
-  static const icWarning = 'assets/icons/_common/ic_warning.svg';
-  static const icSuccess = 'assets/icons/_common/ic_success.svg';
-  static const icTextfieldEye = 'assets/icons/_common/ic_textfield_eye.svg';
-  static const icTextfieldOk = 'assets/icons/_common/ic_textfield_ok.svg';
-  static const icTextfieldClean = 'assets/icons/_common/ic_textfield_clean.svg';
-  static const icClose = 'assets/icons/_common/ic_close.svg';
-  static const icBack = 'assets/icons/_common/ic_back.svg';
-  static const icPlus = 'assets/icons/_common/ic_plus.svg';
-  static const icMinus = 'assets/icons/_common/ic_minus.svg';
-  static const icMore = 'assets/icons/_common/ic_more.svg';
-  static const icError = 'assets/icons/_common/ic_error.svg';
-  static const icInfo = 'assets/icons/_common/ic_info.svg';
-  static const icForward = 'assets/icons/_common/ic_forward.svg';
-
-  static const icPermissionLocation = 'assets/icons/ic_permission_location.svg';
+  static const alertTriangle = 'assets/icons/alert-triangle.svg';
+  static const arrowLeft = 'assets/icons/arrow-left.svg';
+  static const arrowRight = 'assets/icons/arrow-right.svg';
+  static const calendar = 'assets/icons/calendar.svg';
+  static const check = 'assets/icons/check.svg';
+  static const chevronDown = 'assets/icons/chevron-down.svg';
+  static const chevronRight = 'assets/icons/chevron-right.svg';
+  static const circle = 'assets/icons/circle.svg';
+  static const close = 'assets/icons/close.svg';
+  static const closeCircle = 'assets/icons/close-circle.svg';
+  static const eye = 'assets/icons/eye.svg';
+  static const eyeOff = 'assets/icons/eye-off.svg';
+  static const fileText = 'assets/icons/file-text.svg';
+  static const globe = 'assets/icons/globe.svg';
+  static const info = 'assets/icons/info.svg';
+  static const mail = 'assets/icons/mail.svg';
+  static const minus = 'assets/icons/minus.svg';
+  static const plus = 'assets/icons/plus.svg';
+  static const search = 'assets/icons/search.svg';
+  static const settings = 'assets/icons/settings.svg';
+  static const slidersHorizontal = 'assets/icons/sliders-horizontal.svg';
+  static const success = 'assets/icons/success.svg';
+  static const trash = 'assets/icons/trash.svg';
+  static const trendingUp = 'assets/icons/trending-up.svg';
+  static const user = 'assets/icons/user.svg';
 }

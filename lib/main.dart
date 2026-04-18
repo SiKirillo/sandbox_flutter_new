@@ -63,7 +63,7 @@ Future<void> _init() async {
   initLocator();
   await Future.wait([
     locator<DeviceService>().init(),
-    AbstractSharedPreferencesDatasource.init(),
+    CustomPreferencesDatasource.init(),
   ]);
 
   /// Init logger
@@ -73,7 +73,7 @@ Future<void> _init() async {
   /// Init remote datasource
   await Future.wait([
     locator<NetworkProvider>().init(),
-    AbstractRemoteDatasource.init(
+    CustomRemoteDatasource.init(
       // onRefreshToken: () => locator<AuthRepository>().refreshToken(),
       // onExpiredToken: () => locator<AppRepository>().logout(isExpired: true),
       onServerError: (message) {

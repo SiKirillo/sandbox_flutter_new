@@ -1,6 +1,6 @@
 part of '../../camera.dart';
 
-class CameraBloc extends BaseBloc<CameraBlocEvent, CameraState> {
+class CameraBloc extends CustomBloc<CameraBlocEvent, CameraState> {
   Timer? _delayTimer;
 
   CameraBloc() : super(CameraState.initial()) {

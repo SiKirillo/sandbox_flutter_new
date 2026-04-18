@@ -216,7 +216,7 @@ class _CustomSearchInputFieldState extends State<CustomSearchInputField> {
         children: [
           CustomIconButton(
             content: SvgPicture.asset(
-              ImageConstants.icSearch,
+              ImageConstants.search,
               height: 20.0,
               width: 20.0,
               colorFilter: ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
@@ -254,7 +254,7 @@ class _CustomSearchInputFieldState extends State<CustomSearchInputField> {
           if (widget.options.withClearButton && !_isFieldEmpty && _isFocused)
             CustomIconButton(
               content: SvgPicture.asset(
-                ImageConstants.icTextfieldClean,
+                ImageConstants.closeCircle,
                 height: 16.0,
                 width: 16.0,
               ),

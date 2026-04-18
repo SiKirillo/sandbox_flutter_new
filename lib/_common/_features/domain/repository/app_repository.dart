@@ -7,14 +7,14 @@ class AppRepository {
 
     if (isFirstLaunch) {
       await Future.wait([
-        AbstractSecureDatasource.deleteStorage(),
-        AbstractSharedPreferencesDatasource.deletePreferences(),
+        CustomSecureDatasource.deleteStorage(),
+        CustomPreferencesDatasource.deletePreferences(),
         locator<AppPreferencesStorage>().writeInitialConfiguration(false),
       ]);
     } else if (isForced) {
       await Future.wait([
-        AbstractSecureDatasource.deleteStorage(),
-        AbstractSharedPreferencesDatasource.deletePreferencesSafely(),
+        CustomSecureDatasource.deleteStorage(),
+        CustomPreferencesDatasource.deletePreferencesSafely(),
         locator<AppPreferencesStorage>().writeInitialConfiguration(false),
       ]);
     }
@@ -32,8 +32,8 @@ class AppRepository {
     } finally {
       /// Clear token
       await Future.delayed(OtherConstants.defaultDelayDuration);
-      AbstractRemoteDatasource.tokenData = null;
-      AbstractRemoteDatasource.clearRetryQueue();
+      CustomRemoteDatasource.tokenData = null;
+      CustomRemoteDatasource.clearRetryQueue();
 
       /// Re-init
       locator<AppRepository>().init(isForced: true);

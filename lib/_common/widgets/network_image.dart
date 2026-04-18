@@ -112,7 +112,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
           if (_failure != null)
             Center(
               child: SvgPicture.asset(
-                ImageConstants.icTextfieldOk,
+                ImageConstants.check,
                 height: 20.0,
                 width: 20.0,
               ),

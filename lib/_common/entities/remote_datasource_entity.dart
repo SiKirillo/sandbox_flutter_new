@@ -1,7 +1,7 @@
 part of '../common.dart';
 
 /// Abstract model of http request model based on [Dio] client
-abstract class AbstractRemoteDatasource {
+abstract class CustomRemoteDatasource {
   static DioTokenEntity? _tokenData;
   static final _requestsNeedRetry = <_CustomInterceptorEntity>[];
 
@@ -310,8 +310,8 @@ class _CustomHttpInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     /// Add service data to request
-    if (AbstractRemoteDatasource._tokenData != null && options.path != '/api/auth/refresh') {
-      options.headers['Authorization'] = 'Bearer ${AbstractRemoteDatasource._tokenData?.token}';
+    if (CustomRemoteDatasource._tokenData != null && options.path != '/api/auth/refresh') {
+      options.headers['Authorization'] = 'Bearer ${CustomRemoteDatasource._tokenData?.token}';
     }
 
     return handler.next(options);
@@ -338,7 +338,7 @@ class _CustomHttpInterceptor extends Interceptor {
         await onExpiredToken!();
       }
 
-      AbstractRemoteDatasource._requestsNeedRetry.clear();
+      CustomRemoteDatasource._requestsNeedRetry.clear();
       _isRefreshing = false;
       return handler.reject(error);
     }
@@ -347,12 +347,12 @@ class _CustomHttpInterceptor extends Interceptor {
     if (error.response?.statusCode == 401 && error.requestOptions.path != '/api/user/validation') {
       try {
         if (_isRefreshing) {
-          AbstractRemoteDatasource._requestsNeedRetry.add(_CustomInterceptorEntity(error: error, handler: handler));
+          CustomRemoteDatasource._requestsNeedRetry.add(_CustomInterceptorEntity(error: error, handler: handler));
           return;
         }
 
-        AbstractRemoteDatasource._requestsNeedRetry.clear();
-        AbstractRemoteDatasource._requestsNeedRetry.add(_CustomInterceptorEntity(error: error, handler: handler));
+        CustomRemoteDatasource._requestsNeedRetry.clear();
+        CustomRemoteDatasource._requestsNeedRetry.add(_CustomInterceptorEntity(error: error, handler: handler));
 
         _isRefreshing = true;
         if (onRefreshToken != null) {
@@ -363,12 +363,12 @@ class _CustomHttpInterceptor extends Interceptor {
         _isRefreshing = false;
 
         /// Repeat the request with the updated token
-        final localRequests = [...AbstractRemoteDatasource._requestsNeedRetry];
+        final localRequests = [...CustomRemoteDatasource._requestsNeedRetry];
         for (final retry in localRequests) {
-          AbstractRemoteDatasource._requestsNeedRetry.remove(retry);
-          retry.error.requestOptions.headers['Authorization'] = 'Bearer ${AbstractRemoteDatasource._tokenData?.token}';
+          CustomRemoteDatasource._requestsNeedRetry.remove(retry);
+          retry.error.requestOptions.headers['Authorization'] = 'Bearer ${CustomRemoteDatasource._tokenData?.token}';
 
-          if (AbstractRemoteDatasource._tokenData?.token == null || AbstractRemoteDatasource._tokenData?.token == '') {
+          if (CustomRemoteDatasource._tokenData?.token == null || CustomRemoteDatasource._tokenData?.token == '') {
             return handler.reject(DioException(requestOptions: error.requestOptions, type: DioExceptionType.cancel));
           }
 
@@ -385,7 +385,7 @@ class _CustomHttpInterceptor extends Interceptor {
 
           try {
             LoggerService.logInfo('Retrying request: ${retry.error.requestOptions.path}');
-            retry.handler.resolve(await AbstractRemoteDatasource.client.fetch(retry.error.requestOptions));
+            retry.handler.resolve(await CustomRemoteDatasource.client.fetch(retry.error.requestOptions));
           } on DioException catch (e) {
             LoggerService.logError('Retry requests failure', exception: e);
             if (e.response?.statusCode != 401) {
@@ -426,7 +426,7 @@ class _CustomHttpInterceptor extends Interceptor {
   }
 }
 
-/// Holds access and optional refresh token used by [AbstractRemoteDatasource]
+/// Holds access and optional refresh token used by [CustomRemoteDatasource]
 /// for Authorization headers and token refresh flow.
 class DioTokenEntity {
   final String token;

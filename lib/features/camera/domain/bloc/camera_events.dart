@@ -46,7 +46,7 @@ class ToggleOrientationMode_CameraEvent extends CameraBlocEvent {}
 class UpdateFocusPosition_CameraEvent extends CameraBlocEvent {
   final TapDownDetails details;
   final BoxConstraints constraints;
-  final BlocEventResponse<Failure, void>? onResponse;
+  final CustomBlocResponse<Failure, void>? onResponse;
 
   UpdateFocusPosition_CameraEvent({
     required this.details,
@@ -88,7 +88,7 @@ class TakeScan_CameraEvent extends CameraBlocEvent {
   final Code code;
   final CameraType type;
   final List<int> allowedFormats;
-  final BlocEventResponse<Failure, void>? onResponse;
+  final CustomBlocResponse<Failure, void>? onResponse;
 
   TakeScan_CameraEvent({
     required this.code,

@@ -2,8 +2,8 @@ part of '../common.dart';
 
 /// Base Bloc that keeps a list of events currently being processed and
 /// prevents the same event type from running concurrently by default.
-abstract class BaseBloc<E, S> extends Bloc<E, S> {
-  BaseBloc(super.initialState);
+abstract class CustomBloc<E, S> extends Bloc<E, S> {
+  CustomBloc(super.initialState);
 
   final List<E> _processingEvents = [];
 
@@ -45,27 +45,27 @@ abstract class BaseBloc<E, S> extends Bloc<E, S> {
 
 /// Base state for BLoC states; provides [isProcessing] and [isReady] flags
 /// and requires [copyWith]/[copyWithForced] for immutable updates.
-abstract class BlocState {
+abstract class CustomBlocState {
   final bool isProcessing;
   final bool isReady;
 
-  const BlocState({
+  const CustomBlocState({
     required this.isProcessing,
     required this.isReady,
   });
 
-  BlocState copyWith();
-  BlocState copyWithForced();
+  CustomBlocState copyWith();
+  CustomBlocState copyWithForced();
 }
 
 /// Optional callbacks for handling BLoC event outcomes: failure, success, or finish.
 /// Used when dispatching events that need UI feedback (e.g. snackbar on failure).
-class BlocEventResponse<E, T> {
+class CustomBlocResponse<E, T> {
   final Function(E)? onFailure;
   final Function(T)? onResult;
   final Function(dynamic)? onFinish;
 
-  const BlocEventResponse({
+  const CustomBlocResponse({
     this.onFailure,
     this.onResult,
     this.onFinish,

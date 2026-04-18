@@ -44,7 +44,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     return Transform.rotate(
       angle: widget.isVertical ? 0.0 : math.pi / 2.0,
       child: SvgPicture.asset(
-        ImageConstants.icDropDown,
+        ImageConstants.chevronDown,
         height: 24.0,
         width: 24.0,
         colorFilter: ColorFilter.mode(ColorConstants.popupMenuIcon(widget.type), BlendMode.srcIn),

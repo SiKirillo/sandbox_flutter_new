@@ -7,7 +7,7 @@ enum AppStatus {
   loggedOut,
 }
 
-class AppState extends BlocState {
+class AppState extends CustomBlocState {
   final AppStatus status;
 
   const AppState({

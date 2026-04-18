@@ -139,7 +139,7 @@ class DialogWrapper extends StatelessWidget {
                 padding: options.closeButtonPadding,
                 decoration: BoxDecoration(shape: BoxShape.circle),
                 child: SvgPicture.asset(
-                  ImageConstants.icClose,
+                  ImageConstants.close,
                   height: SizeConstants.defaultButtonIconSize,
                   width: SizeConstants.defaultButtonIconSize,
                 ),

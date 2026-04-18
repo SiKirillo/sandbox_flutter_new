@@ -166,7 +166,7 @@ class _InAppNotificationWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(right: 10.0),
             child: SvgPicture.asset(
-              ImageConstants.icSuccess,
+              ImageConstants.success,
               height: 20.0,
               width: 20.0,
             ),
@@ -175,7 +175,7 @@ class _InAppNotificationWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(right: 10.0),
             child: SvgPicture.asset(
-              ImageConstants.icError,
+              ImageConstants.alertTriangle,
               height: 20.0,
               width: 20.0,
             ),

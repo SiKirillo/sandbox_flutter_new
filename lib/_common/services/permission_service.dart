@@ -137,7 +137,7 @@ class _CameraPermissionBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            ImageConstants.icPermissionLocation,
+            ImageConstants.alertTriangle,
             height: 80.0,
             width: 80.0,
           ),
@@ -207,7 +207,7 @@ class _LocationServiceDisabledBottomSheetState extends State<_LocationServiceDis
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            ImageConstants.icPermissionLocation,
+            ImageConstants.alertTriangle,
             height: 80.0,
             width: 80.0,
           ),
@@ -264,7 +264,7 @@ class _LocationPermissionBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            ImageConstants.icPermissionLocation,
+            ImageConstants.alertTriangle,
             height: 80.0,
             width: 80.0,
           ),

@@ -181,7 +181,7 @@ class _CustomActionDialogState extends State<CustomActionDialog> {
         Align(
           alignment: Alignment.centerLeft,
           child: SvgPicture.asset(
-            widget.type == CustomActionDialogType.error ? ImageConstants.icError : ImageConstants.icInfo,
+            widget.type == CustomActionDialogType.error ? ImageConstants.alertTriangle : ImageConstants.info,
             height: 26.0,
             width: 26.0,
           ),

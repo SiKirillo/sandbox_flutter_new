@@ -2,11 +2,11 @@ part of '../common.dart';
 
 /// Abstract model of secure storage
 /// To separate all other implementations we use personal id and build mode name
-class AbstractSecureDatasource {
+class CustomSecureDatasource {
   final String id;
   static const _storage = FlutterSecureStorage();
 
-  const AbstractSecureDatasource({required this.id});
+  const CustomSecureDatasource({required this.id});
 
   static Future<void> deleteStorage() async {
     await _storage.deleteAll();
